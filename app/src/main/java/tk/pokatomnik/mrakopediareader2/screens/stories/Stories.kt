@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import tk.pokatomnik.mrakopediareader2.services.index.rememberMrakopediaIndex
 import tk.pokatomnik.mrakopediareader2.ui.components.*
+import kotlin.math.ceil
 
 @Composable
 fun Stories(
@@ -33,9 +34,9 @@ fun Stories(
             .map {
                 val rating = it.rating
                 val voted = it.voted
-                val readingTime = it.charactersInPage / 1500
+                val readingTime = ceil(it.charactersInPage.toFloat() / 1500).toInt()
                 val description =
-                    "Время: $readingTime | Рейтинг: ${rating ?: 0} | Голосов: ${voted ?: 0}"
+                    "Время: $readingTime мин. | Рейтинг: ${rating ?: 0} | Голосов: ${voted ?: 0}"
                 LazyListItem(
                     id = it.title,
                     title = it.title,

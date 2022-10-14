@@ -24,23 +24,18 @@ fun Categories(
     val (sorting, setSorting) = remember { mutableStateOf<Sorting>(AlphaASC()) }
     val mrakopediaIndex = rememberMrakopediaIndex()
 
-    val lazyListItems = remember(mrakopediaIndex) {
-        mrakopediaIndex.getCategoryNames().toList().map {
-            val category = mrakopediaIndex.getCategory(it)
+    val lazyListItems = remember(mrakopediaIndex, sorting) {
+        sorting.sorted(mrakopediaIndex.getCategories().toList()).map { category ->
             val avgRating = category.avgRating
             val avgVoted = category.avgRating
             val pagesInCategory = category.size
             val description = "Историй: $pagesInCategory | Рейтинг: $avgRating | Голосов: $avgVoted"
             LazyListItem(
-                id = it,
-                title = it,
+                id = category.name,
+                title = category.name,
                 description = description
             )
         }
-    }
-
-    val lazyItemsSorted = remember(lazyListItems, sorting) {
-        sorting.sorted(lazyListItems)
     }
 
     PageContainer(
@@ -72,8 +67,8 @@ fun Categories(
                 direction = if (sorting.sortType == SortingType.RATING) sorting.sortDirection else null,
                 onSortDirectionChange = {
                     setSorting(when (it) {
-                        SortDirection.DESC -> RatingDESC(mrakopediaIndex)
-                        else -> RatingASC(mrakopediaIndex)
+                        SortDirection.DESC -> RatingDESC()
+                        else -> RatingASC()
                     })
                 }
             )
@@ -83,8 +78,8 @@ fun Categories(
                 direction = if (sorting.sortType == SortingType.VOTED) sorting.sortDirection else null,
                 onSortDirectionChange = {
                     setSorting(when (it) {
-                        SortDirection.DESC -> VotedDESC(mrakopediaIndex)
-                        else -> VotedASC(mrakopediaIndex)
+                        SortDirection.DESC -> VotedDESC()
+                        else -> VotedASC()
                     })
                 }
             )
@@ -94,15 +89,15 @@ fun Categories(
                 direction = if (sorting.sortType == SortingType.QUANTITY) sorting.sortDirection else null,
                 onSortDirectionChange = {
                     setSorting(when (it) {
-                        SortDirection.DESC -> QuantityDESC(mrakopediaIndex)
-                        else -> QuantityASC(mrakopediaIndex)
+                        SortDirection.DESC -> QuantityDESC()
+                        else -> QuantityASC()
                     })
                 }
             )
         }
         Divider(modifier = Modifier.fillMaxWidth())
         LazyList(
-            list = lazyItemsSorted,
+            list = lazyListItems,
             onClick = {
                 onSelectCategoryTitle(it.title)
             }

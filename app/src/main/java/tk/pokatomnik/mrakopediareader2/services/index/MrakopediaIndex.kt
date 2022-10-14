@@ -27,6 +27,10 @@ class MrakopediaIndex(
         return mrakopediaIndex.keys
     }
 
+    fun getCategories(): Collection<Category> {
+        return mrakopediaIndex.values
+    }
+
     companion object {
         private const val GENERAL_CATEGORY_TITLE = "Все страницы"
     }

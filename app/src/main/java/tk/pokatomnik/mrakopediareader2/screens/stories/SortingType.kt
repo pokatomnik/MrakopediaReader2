@@ -1,27 +1,27 @@
-package tk.pokatomnik.mrakopediareader2.screens.categories
+package tk.pokatomnik.mrakopediareader2.screens.stories
 
-import tk.pokatomnik.mrakopediareader2.services.index.Category
+import tk.pokatomnik.mrakopediareader2.domain.PageMeta
 import tk.pokatomnik.mrakopediareader2.ui.components.SortDirection
 
 internal enum class SortingType {
     ALPHA,
     RATING,
     VOTED,
-    QUANTITY
+    TIME
 }
 
 internal interface Sorting {
     val sortDirection: SortDirection
     val sortType: SortingType
-    fun sorted(items: List<Category>): List<Category>
+    fun sorted(items: List<PageMeta>): List<PageMeta>
 }
 
 internal class AlphaASC : Sorting {
     override val sortDirection: SortDirection = SortDirection.ASC
     override val sortType: SortingType = SortingType.ALPHA
-    override fun sorted(items: List<Category>): List<Category> {
+    override fun sorted(items: List<PageMeta>): List<PageMeta> {
         return items.sortedWith { a, b ->
-            a.name.lowercase().compareTo(b.name.lowercase())
+            a.title.lowercase().compareTo(b.title.lowercase())
         }
     }
 }
@@ -29,9 +29,9 @@ internal class AlphaASC : Sorting {
 internal class AlphaDESC : Sorting {
     override val sortDirection: SortDirection = SortDirection.DESC
     override val sortType: SortingType = SortingType.ALPHA
-    override fun sorted(items: List<Category>): List<Category> {
+    override fun sorted(items: List<PageMeta>): List<PageMeta> {
         return items.sortedWith { a, b ->
-            b.name.lowercase().compareTo(a.name.lowercase())
+            b.title.lowercase().compareTo(a.title.lowercase())
         }
     }
 }
@@ -39,9 +39,9 @@ internal class AlphaDESC : Sorting {
 internal class RatingASC : Sorting {
     override val sortDirection: SortDirection = SortDirection.ASC
     override val sortType: SortingType = SortingType.RATING
-    override fun sorted(items: List<Category>): List<Category> {
+    override fun sorted(items: List<PageMeta>): List<PageMeta> {
         return items.sortedWith { a, b ->
-            a.avgRating - b.avgRating
+            (a.rating ?: 0) - (b.rating ?: 0)
         }
     }
 }
@@ -49,9 +49,9 @@ internal class RatingASC : Sorting {
 internal class RatingDESC : Sorting {
     override val sortDirection: SortDirection = SortDirection.DESC
     override val sortType: SortingType = SortingType.RATING
-    override fun sorted(items: List<Category>): List<Category> {
+    override fun sorted(items: List<PageMeta>): List<PageMeta> {
         return items.sortedWith { a, b ->
-            b.avgRating - a.avgRating
+            (b.rating ?: 0) - (a.rating ?: 0)
         }
     }
 }
@@ -59,9 +59,9 @@ internal class RatingDESC : Sorting {
 internal class VotedASC : Sorting {
     override val sortDirection: SortDirection = SortDirection.ASC
     override val sortType: SortingType = SortingType.VOTED
-    override fun sorted(items: List<Category>): List<Category> {
+    override fun sorted(items: List<PageMeta>): List<PageMeta> {
         return items.sortedWith { a, b ->
-            a.avgVoted - b.avgVoted
+            (a.voted ?: 0) - (b.voted ?: 0)
         }
     }
 }
@@ -69,29 +69,29 @@ internal class VotedASC : Sorting {
 internal class VotedDESC : Sorting {
     override val sortDirection: SortDirection = SortDirection.DESC
     override val sortType: SortingType = SortingType.VOTED
-    override fun sorted(items: List<Category>): List<Category> {
+    override fun sorted(items: List<PageMeta>): List<PageMeta> {
         return items.sortedWith { a, b ->
-            b.avgVoted - a.avgVoted
+            (b.voted ?: 0) - (a.voted ?: 0)
         }
     }
 }
 
-internal class QuantityASC : Sorting {
+internal class TimeASC : Sorting {
     override val sortDirection: SortDirection = SortDirection.ASC
-    override val sortType: SortingType = SortingType.QUANTITY
-    override fun sorted(items: List<Category>): List<Category> {
+    override val sortType: SortingType = SortingType.TIME
+    override fun sorted(items: List<PageMeta>): List<PageMeta> {
         return items.sortedWith { a, b ->
-            a.size - b.size
+            a.charactersInPage - b.charactersInPage
         }
     }
 }
 
-internal class QuantityDESC : Sorting {
+internal class TimeDESC : Sorting {
     override val sortDirection: SortDirection = SortDirection.DESC
-    override val sortType: SortingType = SortingType.QUANTITY
-    override fun sorted(items: List<Category>): List<Category> {
+    override val sortType: SortingType = SortingType.TIME
+    override fun sorted(items: List<PageMeta>): List<PageMeta> {
         return items.sortedWith { a, b ->
-            b.size - a.size
+            b.charactersInPage - a.charactersInPage
         }
     }
 }

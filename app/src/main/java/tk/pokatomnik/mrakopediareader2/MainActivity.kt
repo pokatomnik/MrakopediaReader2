@@ -21,6 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import tk.pokatomnik.mrakopediareader2.screens.categories.Categories
 import tk.pokatomnik.mrakopediareader2.screens.story.Story
 import tk.pokatomnik.mrakopediareader2.screens.stories.Stories
+import tk.pokatomnik.mrakopediareader2.services.index.rememberMrakopediaIndex
 import tk.pokatomnik.mrakopediareader2.ui.components.BottomNavItem
 import tk.pokatomnik.mrakopediareader2.ui.theme.MrakopediaReader2Theme
 
@@ -29,6 +30,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val mrakopediaIndex = rememberMrakopediaIndex()
             val (categoryTitle, setCategoryTitle) = remember { mutableStateOf<String?>(null) }
             val (pageTitle, setPageTitle) = remember { mutableStateOf<String?>(null) }
 
@@ -112,7 +114,17 @@ class MainActivity : ComponentActivity() {
                                 if (pageTitle != null && categoryTitle != null) {
                                     Story(
                                         selectedCategoryTitle = categoryTitle,
-                                        selectedPageTitle = pageTitle
+                                        selectedPageTitle = pageTitle,
+                                        onNavigateToPage = {
+                                            setCategoryTitle(mrakopediaIndex.getGeneralCategoryTitle())
+                                            setPageTitle(it)
+                                        },
+                                        onNavigateToCategory = {
+                                            setCategoryTitle(it)
+                                            navController.navigate("stories") {
+                                                launchSingleTop = true
+                                            }
+                                        }
                                     )
                                 }
                             }

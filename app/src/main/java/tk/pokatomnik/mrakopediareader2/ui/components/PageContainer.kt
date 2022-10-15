@@ -9,21 +9,23 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun PageContainer(
-    header: @Composable () -> Unit,
+    header: (@Composable () -> Unit)? = null,
     body: @Composable () -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp)
-                .padding(horizontal = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            header()
+        if (header != null) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .padding(horizontal = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                header()
+            }
+            Divider(modifier = Modifier.fillMaxWidth())
         }
-        Divider(modifier = Modifier.fillMaxWidth())
         Column(modifier = Modifier.fillMaxSize()) {
             body()
         }

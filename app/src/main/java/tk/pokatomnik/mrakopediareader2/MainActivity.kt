@@ -112,7 +112,16 @@ class MainActivity : ComponentActivity() {
                                 if (pageTitle != null && categoryTitle != null) {
                                     Story(
                                         selectedCategoryTitle = categoryTitle,
-                                        selectedPageTitle = pageTitle
+                                        selectedPageTitle = pageTitle,
+                                        onNavigateToPage = {
+                                            setPageTitle(it)
+                                        },
+                                        onNavigateToCategory = {
+                                            setCategoryTitle(it)
+                                            navController.navigate("stories") {
+                                                launchSingleTop = true
+                                            }
+                                        }
                                     )
                                 }
                             }

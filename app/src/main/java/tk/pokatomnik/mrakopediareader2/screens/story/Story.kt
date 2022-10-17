@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import tk.pokatomnik.mrakopediareader2.services.index.rememberMrakopediaIndex
-import tk.pokatomnik.mrakopediareader2.services.preferences.rememberPreferences
+import tk.pokatomnik.mrakopediareader2.services.preferences.page.rememberContentTextSize
 import tk.pokatomnik.mrakopediareader2.ui.components.PageContainer
 
 @Composable
@@ -36,7 +36,7 @@ fun Story(
     )
 
     val coroutineScope = rememberCoroutineScope()
-    val pageContentSize = rememberPreferences().pagePreferences.rememberContentTextSize()
+    val pageContentSize = rememberContentTextSize()
     val category = rememberMrakopediaIndex()
         .getCategory(selectedCategoryTitle)
     val content = category

@@ -19,6 +19,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import tk.pokatomnik.mrakopediareader2.screens.categories.Categories
+import tk.pokatomnik.mrakopediareader2.screens.settings.Settings
 import tk.pokatomnik.mrakopediareader2.screens.story.Story
 import tk.pokatomnik.mrakopediareader2.screens.stories.Stories
 import tk.pokatomnik.mrakopediareader2.services.index.rememberMrakopediaIndex
@@ -75,6 +76,17 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             )
+                            BottomNavItem(
+                                icon = Icons.Filled.Settings,
+                                title = "Настройки",
+                                enabled = true,
+                                selected = currentDestination?.hierarchy?.any { it.route == "settings" } == true,
+                                onClick = {
+                                    navController.navigate("settings") {
+                                        launchSingleTop = true
+                                    }
+                                }
+                            )
                         }
                     }
                 ) { innerPadding ->
@@ -127,6 +139,9 @@ class MainActivity : ComponentActivity() {
                                         }
                                     )
                                 }
+                            }
+                            composable(route = "settings") {
+                                Settings()
                             }
                         }
                     }

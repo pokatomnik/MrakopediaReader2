@@ -2,6 +2,8 @@ package tk.pokatomnik.mrakopediareader2.services.preferences
 
 import android.content.Context
 import android.content.SharedPreferences
+import tk.pokatomnik.mrakopediareader2.services.preferences.global.GlobalPreferences
+import tk.pokatomnik.mrakopediareader2.services.preferences.page.PagePreferences
 
 class Preferences(private val context: Context) {
     private fun getPreferencesByName(name: String): SharedPreferences {

@@ -4,6 +4,13 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import tk.pokatomnik.mrakopediareader2.services.preferences.global.LocalThemeIdentifier
+import tk.pokatomnik.mrakopediareader2.services.preferences.global.ThemeIdentifier
+import tk.pokatomnik.mrakopediareader2.services.preferences.global.rememberThemeIdentifier
+import tk.pokatomnik.mrakopediareader2.services.preferences.rememberPreferences
 
 private val DarkColorPalette = darkColors(
     primary = Purple200,
@@ -27,11 +34,18 @@ private val LightColorPalette = lightColors(
 )
 
 @Composable
-fun MrakopediaReader2Theme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+private fun MrakopediaReader2ThemeInternal(
     content: @Composable () -> Unit
 ) {
-    val colors = if (darkTheme) {
+    val themeIdentifierState = rememberThemeIdentifier()
+    val darkTheme = isSystemInDarkTheme()
+    val darkThemeEnabledByPreferences = when (themeIdentifierState.value) {
+        ThemeIdentifier.DARK -> true
+        ThemeIdentifier.LIGHT -> false
+        else -> darkTheme
+    }
+
+    val colors = if (darkThemeEnabledByPreferences) {
         DarkColorPalette
     } else {
         LightColorPalette
@@ -43,4 +57,17 @@ fun MrakopediaReader2Theme(
         shapes = Shapes,
         content = content
     )
+}
+
+@Composable
+fun MrakopediaReader2Theme(
+    content: @Composable () -> Unit
+) {
+    val themeIdentifier = rememberPreferences().globalPreferences.themeIdentifier
+    val state = remember { mutableStateOf(themeIdentifier) }
+    CompositionLocalProvider(LocalThemeIdentifier provides state) {
+        MrakopediaReader2ThemeInternal {
+            content()
+        }
+    }
 }

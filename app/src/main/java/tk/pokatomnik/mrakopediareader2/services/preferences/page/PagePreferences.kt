@@ -1,7 +1,6 @@
-package tk.pokatomnik.mrakopediareader2.services.preferences
+package tk.pokatomnik.mrakopediareader2.services.preferences.page
 
 import android.content.SharedPreferences
-import androidx.compose.runtime.*
 
 class PagePreferences(private val sharedPreferences: SharedPreferences) {
     var contentTextSize: Int = sharedPreferences.getInt(FONT_SIZE_KEY, 14)
@@ -13,15 +12,6 @@ class PagePreferences(private val sharedPreferences: SharedPreferences) {
     val minFontSize = 14
 
     val maxFontSize = 64
-
-    @Composable
-    fun rememberContentTextSize(): MutableState<Int> {
-        val state = remember { mutableStateOf(contentTextSize) }
-        LaunchedEffect(state.value) {
-            contentTextSize = state.value
-        }
-        return state
-    }
 
     companion object {
         const val FONT_SIZE_KEY = "font:size"

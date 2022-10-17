@@ -8,12 +8,14 @@ import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import tk.pokatomnik.mrakopediareader2.services.index.rememberMrakopediaIndex
+import tk.pokatomnik.mrakopediareader2.services.preferences.rememberPreferences
 import tk.pokatomnik.mrakopediareader2.ui.components.*
 import tk.pokatomnik.mrakopediareader2.ui.components.PageTitle
 
@@ -21,8 +23,17 @@ import tk.pokatomnik.mrakopediareader2.ui.components.PageTitle
 fun Categories(
     onSelectCategoryTitle: (categoryTitle: String) -> Unit,
 ) {
-    val (sorting, setSorting) = remember { mutableStateOf<Sorting>(AlphaASC()) }
+    val preferences = rememberPreferences()
+    val (sorting, setSorting) = remember {
+        mutableStateOf(
+            sortingMap[preferences.categoriesPreferences.sortingType] ?: AlphaASC()
+        )
+    }
     val mrakopediaIndex = rememberMrakopediaIndex()
+
+    LaunchedEffect(sorting) {
+        preferences.categoriesPreferences.sortingType = sorting.toString()
+    }
 
     val lazyListItems = remember(mrakopediaIndex, sorting) {
         sorting.sorted(mrakopediaIndex.getCategories().toList()).map { category ->

@@ -11,12 +11,14 @@ import androidx.compose.material.icons.filled.SortByAlpha
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import tk.pokatomnik.mrakopediareader2.services.index.rememberMrakopediaIndex
+import tk.pokatomnik.mrakopediareader2.services.preferences.rememberPreferences
 import tk.pokatomnik.mrakopediareader2.ui.components.*
 import kotlin.math.ceil
 
@@ -25,9 +27,18 @@ fun Stories(
     selectedCategoryTitle: String,
     onSelectPage: (pageTitle: String) -> Unit
 ) {
-    val (sorting, setSorting) = remember { mutableStateOf<Sorting>(AlphaASC()) }
+    val preferences = rememberPreferences()
+    val (sorting, setSorting) = remember {
+        mutableStateOf(
+            sortingMap[preferences.storiesPreferences.sortingType] ?: AlphaASC()
+        )
+    }
     val mrakopediaIndex = rememberMrakopediaIndex()
     val category = mrakopediaIndex.getCategory(selectedCategoryTitle)
+
+    LaunchedEffect(sorting) {
+        preferences.storiesPreferences.sortingType = sorting.toString()
+    }
 
     val lazyListItems = remember(category, sorting) {
         sorting.sorted(category.pages)

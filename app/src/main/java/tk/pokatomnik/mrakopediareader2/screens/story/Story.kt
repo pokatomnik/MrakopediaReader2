@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 import tk.pokatomnik.mrakopediareader2.services.index.rememberMrakopediaIndex
 import tk.pokatomnik.mrakopediareader2.services.preferences.page.rememberContentTextSize
+import tk.pokatomnik.mrakopediareader2.ui.components.KeepScreenOn
 import tk.pokatomnik.mrakopediareader2.ui.components.PageContainer
 
 @Composable
@@ -51,56 +52,58 @@ fun Story(
         setControlsDisplayed(false)
     }
 
-    PageContainer {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp)
-                    .verticalScroll(scrollState)
-                    .clickable(
-                        remember { MutableInteractionSource() },
-                        indication = null
-                    ) {
-                        setControlsDisplayed(!controlsDisplayed)
+    KeepScreenOn {
+        PageContainer {
+            Box(modifier = Modifier.fillMaxSize()) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp)
+                        .verticalScroll(scrollState)
+                        .clickable(
+                            remember { MutableInteractionSource() },
+                            indication = null
+                        ) {
+                            setControlsDisplayed(!controlsDisplayed)
+                        }
+                ) {
+                    SelectionContainer {
+                        Text(
+                            text = selectedPageTitle,
+                            style = MaterialTheme.typography.h5,
+                            textAlign = TextAlign.Center,
+                        )
                     }
-            ) {
-                SelectionContainer {
-                    Text(
-                        text = selectedPageTitle,
-                        style = MaterialTheme.typography.h5,
-                        textAlign = TextAlign.Center,
-                    )
-                }
-                Divider(modifier = Modifier.fillMaxWidth())
-                SelectionContainer {
-                    Text(
-                        textAlign = TextAlign.Justify,
-                        text = content,
-                        fontSize = pageContentSize.value.sp
-                    )
-                }
-                if (seeAlso.isNotEmpty()) {
-                    SeeAlso(
-                        seeAlso = seeAlso,
-                        onClick = {
-                            onNavigateToPage(it)
-                            coroutineScope.launch {
-                                scrollState.animateScrollTo(0)
+                    Divider(modifier = Modifier.fillMaxWidth())
+                    SelectionContainer {
+                        Text(
+                            textAlign = TextAlign.Justify,
+                            text = content,
+                            fontSize = pageContentSize.value.sp
+                        )
+                    }
+                    if (seeAlso.isNotEmpty()) {
+                        SeeAlso(
+                            seeAlso = seeAlso,
+                            onClick = {
+                                onNavigateToPage(it)
+                                coroutineScope.launch {
+                                    scrollState.animateScrollTo(0)
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
+                    if (categories.isNotEmpty()) {
+                        Categories(
+                            categories = categories,
+                            onClick = {
+                                onNavigateToCategory(it)
+                            }
+                        )
+                    }
                 }
-                if (categories.isNotEmpty()) {
-                    Categories(
-                        categories = categories,
-                        onClick = {
-                            onNavigateToCategory(it)
-                        }
-                    )
-                }
+                Controls(alpha = controlsAlpha.value, pageContentSize = pageContentSize)
             }
-            Controls(alpha = controlsAlpha.value, pageContentSize = pageContentSize)
         }
     }
 }

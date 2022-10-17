@@ -3,20 +3,23 @@ package tk.pokatomnik.mrakopediareader2.screens.stories
 import tk.pokatomnik.mrakopediareader2.domain.PageMeta
 import tk.pokatomnik.mrakopediareader2.ui.components.SortDirection
 
-internal enum class SortingType {
+enum class SortingType {
     ALPHA,
     RATING,
     VOTED,
     TIME
 }
 
-internal interface Sorting {
-    val sortDirection: SortDirection
-    val sortType: SortingType
-    fun sorted(items: List<PageMeta>): List<PageMeta>
+abstract class Sorting {
+    abstract val sortDirection: SortDirection
+    abstract val sortType: SortingType
+    abstract fun sorted(items: List<PageMeta>): List<PageMeta>
+    override fun toString(): String {
+        return this::class.simpleName ?: ""
+    }
 }
 
-internal class AlphaASC : Sorting {
+internal class AlphaASC : Sorting() {
     override val sortDirection: SortDirection = SortDirection.ASC
     override val sortType: SortingType = SortingType.ALPHA
     override fun sorted(items: List<PageMeta>): List<PageMeta> {
@@ -26,7 +29,7 @@ internal class AlphaASC : Sorting {
     }
 }
 
-internal class AlphaDESC : Sorting {
+internal class AlphaDESC : Sorting() {
     override val sortDirection: SortDirection = SortDirection.DESC
     override val sortType: SortingType = SortingType.ALPHA
     override fun sorted(items: List<PageMeta>): List<PageMeta> {
@@ -36,7 +39,7 @@ internal class AlphaDESC : Sorting {
     }
 }
 
-internal class RatingASC : Sorting {
+internal class RatingASC : Sorting() {
     override val sortDirection: SortDirection = SortDirection.ASC
     override val sortType: SortingType = SortingType.RATING
     override fun sorted(items: List<PageMeta>): List<PageMeta> {
@@ -46,7 +49,7 @@ internal class RatingASC : Sorting {
     }
 }
 
-internal class RatingDESC : Sorting {
+internal class RatingDESC : Sorting() {
     override val sortDirection: SortDirection = SortDirection.DESC
     override val sortType: SortingType = SortingType.RATING
     override fun sorted(items: List<PageMeta>): List<PageMeta> {
@@ -56,7 +59,7 @@ internal class RatingDESC : Sorting {
     }
 }
 
-internal class VotedASC : Sorting {
+internal class VotedASC : Sorting() {
     override val sortDirection: SortDirection = SortDirection.ASC
     override val sortType: SortingType = SortingType.VOTED
     override fun sorted(items: List<PageMeta>): List<PageMeta> {
@@ -66,7 +69,7 @@ internal class VotedASC : Sorting {
     }
 }
 
-internal class VotedDESC : Sorting {
+internal class VotedDESC : Sorting() {
     override val sortDirection: SortDirection = SortDirection.DESC
     override val sortType: SortingType = SortingType.VOTED
     override fun sorted(items: List<PageMeta>): List<PageMeta> {
@@ -76,7 +79,7 @@ internal class VotedDESC : Sorting {
     }
 }
 
-internal class TimeASC : Sorting {
+internal class TimeASC : Sorting() {
     override val sortDirection: SortDirection = SortDirection.ASC
     override val sortType: SortingType = SortingType.TIME
     override fun sorted(items: List<PageMeta>): List<PageMeta> {
@@ -86,7 +89,7 @@ internal class TimeASC : Sorting {
     }
 }
 
-internal class TimeDESC : Sorting {
+internal class TimeDESC : Sorting() {
     override val sortDirection: SortDirection = SortDirection.DESC
     override val sortType: SortingType = SortingType.TIME
     override fun sorted(items: List<PageMeta>): List<PageMeta> {
@@ -95,3 +98,14 @@ internal class TimeDESC : Sorting {
         }
     }
 }
+
+val sortingMap = mapOf(
+    AlphaASC::class.simpleName to AlphaASC(),
+    AlphaDESC::class.simpleName to AlphaDESC(),
+    RatingASC::class.simpleName to RatingASC(),
+    RatingDESC::class.simpleName to RatingDESC(),
+    VotedASC::class.simpleName to VotedASC(),
+    VotedDESC::class.simpleName to VotedDESC(),
+    TimeASC::class.simpleName to TimeASC(),
+    TimeDESC::class.simpleName to TimeDESC()
+)

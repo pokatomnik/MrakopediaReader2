@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 const val HEIGHT = 64
+const val LIST_NAV_ITEM_PADDING = 16
 
 @Composable
 fun ListNavItem(
@@ -34,7 +35,7 @@ fun ListNavItem(
                 indication = rememberRipple(bounded = true),
                 interactionSource = remember { MutableInteractionSource() }
             )
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = LIST_NAV_ITEM_PADDING.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier

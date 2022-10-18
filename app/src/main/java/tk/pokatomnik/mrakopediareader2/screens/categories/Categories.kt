@@ -37,14 +37,10 @@ fun Categories(
 
     val lazyListItems = remember(mrakopediaIndex, sorting) {
         sorting.sorted(mrakopediaIndex.getCategories().toList()).map { category ->
-            val avgRating = category.avgRating
-            val avgVoted = category.avgRating
-            val pagesInCategory = category.size
-            val description = "Историй: $pagesInCategory | Рейтинг: $avgRating | Голосов: $avgVoted"
             LazyListItem(
                 id = category.name,
                 title = category.name,
-                description = description
+                description = category.formatDescription()
             )
         }
     }

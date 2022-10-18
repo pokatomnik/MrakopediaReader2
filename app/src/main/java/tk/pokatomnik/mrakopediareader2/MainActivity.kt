@@ -19,6 +19,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import tk.pokatomnik.mrakopediareader2.screens.categories.Categories
+import tk.pokatomnik.mrakopediareader2.screens.search.Search
 import tk.pokatomnik.mrakopediareader2.screens.settings.Settings
 import tk.pokatomnik.mrakopediareader2.screens.story.Story
 import tk.pokatomnik.mrakopediareader2.screens.stories.Stories
@@ -77,6 +78,17 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                             BottomNavItem(
+                                icon = Icons.Filled.Search,
+                                title = "Поиск",
+                                selected = currentDestination?.hierarchy?.any { it.route == "search" } == true,
+                                enabled = true,
+                                onClick = {
+                                    navController.navigate("search") {
+                                        launchSingleTop = true
+                                    }
+                                }
+                            )
+                            BottomNavItem(
                                 icon = Icons.Filled.Settings,
                                 title = "Настройки",
                                 enabled = true,
@@ -102,6 +114,23 @@ class MainActivity : ComponentActivity() {
                             composable(route = "categories") {
                                 Categories(
                                     onSelectCategoryTitle = {
+                                        setCategoryTitle(it)
+                                        navController.navigate("stories") {
+                                            launchSingleTop = true
+                                        }
+                                    }
+                                )
+                            }
+                            composable(route = "search") {
+                                Search(
+                                    onSelectPage = {
+                                        setCategoryTitle(mrakopediaIndex.getGeneralCategoryTitle())
+                                        setPageTitle(it)
+                                        navController.navigate("story") {
+                                            launchSingleTop = true
+                                        }
+                                    },
+                                    onSelectCategory = {
                                         setCategoryTitle(it)
                                         navController.navigate("stories") {
                                             launchSingleTop = true

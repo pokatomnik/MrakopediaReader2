@@ -33,6 +33,10 @@ class Category(
         } / size
     }
 
+    fun formatDescription(): String {
+        return "Историй: $size | Рейтинг: $avgRating | Голосов: $avgVoted"
+    }
+
     fun getPageMetaByTitle(title: String): PageMeta? {
         return items[title]
     }

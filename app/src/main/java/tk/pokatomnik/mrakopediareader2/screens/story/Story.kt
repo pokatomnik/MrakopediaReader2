@@ -101,6 +101,7 @@ fun Story(
                             }
                         )
                     }
+                    Source(pageTitle = selectedPageTitle)
                 }
                 Controls(alpha = controlsAlpha.value, pageContentSize = pageContentSize)
             }

@@ -28,6 +28,7 @@ import tk.pokatomnik.mrakopediareader2.screens.story.Story
 import tk.pokatomnik.mrakopediareader2.screens.stories.Stories
 import tk.pokatomnik.mrakopediareader2.services.index.rememberMrakopediaIndex
 import tk.pokatomnik.mrakopediareader2.ui.components.BottomNavItem
+import tk.pokatomnik.mrakopediareader2.ui.components.rememberToast
 import tk.pokatomnik.mrakopediareader2.ui.theme.MrakopediaReader2Theme
 
 @AndroidEntryPoint
@@ -45,6 +46,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val showToast = rememberToast()
             val mrakopediaIndex = rememberMrakopediaIndex()
             val (categoryTitle, setCategoryTitle) = remember { mutableStateOf<String?>(null) }
             val (pageTitle, setPageTitle) = remember { mutableStateOf<String?>(null) }
@@ -60,35 +62,42 @@ class MainActivity : ComponentActivity() {
                             BottomNavItem(
                                 icon = Icons.Filled.List,
                                 title = "Категории",
-                                enabled = true,
                                 selected = currentDestination.on("categories"),
                                 onClick = { navController.navigateSingle("categories") }
                             )
                             BottomNavItem(
                                 icon = Icons.Filled.FileCopy,
                                 title = "Список Историй",
-                                enabled = categoryTitle != null,
                                 selected = currentDestination.on("stories"),
-                                onClick = { navController.navigateSingle("stories") }
+                                onClick = {
+                                    if (categoryTitle != null) {
+                                        navController.navigateSingle("stories")
+                                    } else {
+                                        showToast("Выберите категорию")
+                                    }
+                                }
                             )
                             BottomNavItem(
                                 icon = Icons.Filled.AutoStories,
                                 title = "История",
-                                enabled = pageTitle != null,
                                 selected = currentDestination.on("story"),
-                                onClick = { navController.navigateSingle("story") }
+                                onClick = {
+                                    if (pageTitle != null) {
+                                        navController.navigateSingle("story")
+                                    } else {
+                                        showToast("Выберите историю")
+                                    }
+                                }
                             )
                             BottomNavItem(
                                 icon = Icons.Filled.Favorite,
                                 title = "Избранное",
-                                enabled = true,
                                 selected = currentDestination.on("favorites"),
                                 onClick = { navController.navigateSingle("favorites") }
                             )
                             BottomNavItem(
                                 icon = Icons.Filled.Settings,
                                 title = "Настройки",
-                                enabled = true,
                                 selected = currentDestination.on("settings"),
                                 onClick = { navController.navigateSingle("settings") }
                             )

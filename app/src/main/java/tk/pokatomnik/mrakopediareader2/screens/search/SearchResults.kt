@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import tk.pokatomnik.mrakopediareader2.services.index.SearchResult
 import tk.pokatomnik.mrakopediareader2.services.index.rememberMrakopediaIndex
-import tk.pokatomnik.mrakopediareader2.ui.components.LIST_NAV_ITEM_PADDING
+import tk.pokatomnik.mrakopediareader2.ui.components.LIST_ITEM_PADDING
 import tk.pokatomnik.mrakopediareader2.ui.components.ListNavItem
 import tk.pokatomnik.mrakopediareader2.ui.components.PageContainer
 import tk.pokatomnik.mrakopediareader2.ui.components.PageTitle
@@ -85,10 +85,10 @@ fun SearchResults(
                 ))
                 if (results.categories.isNotEmpty()) {
                     Spacer(modifier = Modifier.fillMaxWidth().height(16.dp))
-                    Column {
+                    Column(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
                         Text(
                             text = "Категории",
-                            modifier = Modifier.padding(horizontal = LIST_NAV_ITEM_PADDING.dp)
+                            modifier = Modifier.padding(horizontal = LIST_ITEM_PADDING.dp)
                         )
                         Divider(modifier = Modifier.fillMaxWidth())
                         for (category in categoriesLimited) {
@@ -103,7 +103,7 @@ fun SearchResults(
                         if (results.categories.size > categoriesLimited.size) {
                             Text(
                                 text = "Показаны не все категории, уточните строку поиска",
-                                modifier = Modifier.padding(horizontal = (LIST_NAV_ITEM_PADDING * 2).dp).fillMaxWidth(),
+                                modifier = Modifier.padding(horizontal = (LIST_ITEM_PADDING * 2).dp).fillMaxWidth(),
                                 textAlign = TextAlign.Center
                             )
                         }
@@ -111,13 +111,10 @@ fun SearchResults(
                 }
                 if (results.pageMeta.isNotEmpty()) {
                     Spacer(modifier = Modifier.fillMaxWidth().height(16.dp))
-                    Column(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp)
-                    ) {
+                    Column(modifier = Modifier.fillMaxWidth().padding(top = 8.dp)) {
                         Text(
                             text = "Истории",
-                            modifier = Modifier.padding(horizontal = LIST_NAV_ITEM_PADDING.dp)
+                            modifier = Modifier.padding(horizontal = LIST_ITEM_PADDING.dp)
                         )
                         Divider(modifier = Modifier.fillMaxWidth())
                         for (pageMeta in pageMetaLimited) {
@@ -132,7 +129,7 @@ fun SearchResults(
                         if (results.pageMeta.size > pageMetaLimited.size) {
                             Text(
                                 text = "Показаны не все истории, уточните строку поиска",
-                                modifier = Modifier.padding(horizontal = (LIST_NAV_ITEM_PADDING * 2).dp).fillMaxWidth(),
+                                modifier = Modifier.padding(horizontal = (LIST_ITEM_PADDING * 2).dp).fillMaxWidth(),
                                 textAlign = TextAlign.Center
                             )
                         }

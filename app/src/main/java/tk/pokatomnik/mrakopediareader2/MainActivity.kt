@@ -78,17 +78,6 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                             BottomNavItem(
-                                icon = Icons.Filled.Search,
-                                title = "Поиск",
-                                selected = currentDestination?.hierarchy?.any { it.route == "search" } == true,
-                                enabled = true,
-                                onClick = {
-                                    navController.navigate("search") {
-                                        launchSingleTop = true
-                                    }
-                                }
-                            )
-                            BottomNavItem(
                                 icon = Icons.Filled.Settings,
                                 title = "Настройки",
                                 enabled = true,
@@ -116,6 +105,11 @@ class MainActivity : ComponentActivity() {
                                     onSelectCategoryTitle = {
                                         setCategoryTitle(it)
                                         navController.navigate("stories") {
+                                            launchSingleTop = true
+                                        }
+                                    },
+                                    onPressSearch = {
+                                        navController.navigate("search") {
                                             launchSingleTop = true
                                         }
                                     }

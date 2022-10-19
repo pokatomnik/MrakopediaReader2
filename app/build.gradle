@@ -20,6 +20,14 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += [
+                        "room.schemaLocation":"$projectDir/schemas".toString(),
+                        "room.incremental":"true",
+                        "room.expandProjection":"true"]
+            }
+        }
     }
 
     buildTypes {
@@ -83,5 +91,11 @@ dependencies {
     // Additional icons
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
 
+    // Coroutines helpers
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+
+    // Database
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
 }

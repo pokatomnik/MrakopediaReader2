@@ -12,11 +12,9 @@ fun RowScope.BottomNavItem(
     selected: Boolean,
     icon: ImageVector,
     title: String,
-    enabled: Boolean,
     onClick: () -> Unit,
 ) {
     BottomNavigationItem(
-        enabled = enabled,
         selected = selected,
         onClick = onClick,
         icon = {

@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -29,14 +30,18 @@ import tk.pokatomnik.mrakopediareader2.services.index.rememberMrakopediaIndex
 import tk.pokatomnik.mrakopediareader2.ui.components.BottomNavItem
 import tk.pokatomnik.mrakopediareader2.ui.theme.MrakopediaReader2Theme
 
-private fun NavHostController.navigateSingle(route: String) {
-    navigate(route) {
-        launchSingleTop = true
-    }
-}
-
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private fun NavHostController.navigateSingle(route: String) {
+        navigate(route) {
+            launchSingleTop = true
+        }
+    }
+
+    private fun NavDestination?.on(route: String): Boolean {
+        return this?.hierarchy?.any { it.route == route } == true
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -56,35 +61,35 @@ class MainActivity : ComponentActivity() {
                                 icon = Icons.Filled.List,
                                 title = "Категории",
                                 enabled = true,
-                                selected = currentDestination?.hierarchy?.any { it.route == "categories" } == true,
+                                selected = currentDestination.on("categories"),
                                 onClick = { navController.navigateSingle("categories") }
                             )
                             BottomNavItem(
                                 icon = Icons.Filled.FileCopy,
                                 title = "Список Историй",
                                 enabled = categoryTitle != null,
-                                selected = currentDestination?.hierarchy?.any { it.route == "stories" } == true,
+                                selected = currentDestination.on("stories"),
                                 onClick = { navController.navigateSingle("stories") }
                             )
                             BottomNavItem(
                                 icon = Icons.Filled.AutoStories,
                                 title = "История",
                                 enabled = pageTitle != null,
-                                selected = currentDestination?.hierarchy?.any { it.route == "story" } == true,
+                                selected = currentDestination.on("story"),
                                 onClick = { navController.navigateSingle("story") }
                             )
                             BottomNavItem(
                                 icon = Icons.Filled.Favorite,
                                 title = "Избранное",
                                 enabled = true,
-                                selected = currentDestination?.hierarchy?.any { it.route == "favorites" } == true,
+                                selected = currentDestination.on("favorites"),
                                 onClick = { navController.navigateSingle("favorites") }
                             )
                             BottomNavItem(
                                 icon = Icons.Filled.Settings,
                                 title = "Настройки",
                                 enabled = true,
-                                selected = currentDestination?.hierarchy?.any { it.route == "settings" } == true,
+                                selected = currentDestination.on("settings"),
                                 onClick = { navController.navigateSingle("settings") }
                             )
                         }
@@ -103,6 +108,7 @@ class MainActivity : ComponentActivity() {
                                 Categories(
                                     onSelectCategoryTitle = {
                                         setCategoryTitle(it)
+                                        setPageTitle(null)
                                         navController.navigateSingle("stories")
                                     },
                                     onPressSearch = { navController.navigateSingle("search") }
@@ -117,6 +123,7 @@ class MainActivity : ComponentActivity() {
                                     },
                                     onSelectCategory = {
                                         setCategoryTitle(it)
+                                        setPageTitle(null)
                                         navController.navigateSingle("stories")
                                     }
                                 )
@@ -143,6 +150,7 @@ class MainActivity : ComponentActivity() {
                                         },
                                         onNavigateToCategory = {
                                             setCategoryTitle(it)
+                                            setPageTitle(null)
                                             navController.navigateSingle("stories")
                                         }
                                     )
@@ -150,10 +158,15 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(route = "favorites") {
                                 Favorites(
-                                    onItemClick = {
+                                    onFavoriteStoryClick = {
                                         setCategoryTitle(mrakopediaIndex.getGeneralCategoryTitle())
                                         setPageTitle(it)
                                         navController.navigateSingle("story")
+                                    },
+                                    onFavoriteCategoryClick = {
+                                        setCategoryTitle(it)
+                                        setPageTitle(null)
+                                        navController.navigateSingle("stories")
                                     }
                                 )
                             }

@@ -2,11 +2,13 @@ package tk.pokatomnik.mrakopediareader2.services.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import tk.pokatomnik.mrakopediareader2.services.db.dao.favoritecategories.FavoriteCategoriesDAO
+import tk.pokatomnik.mrakopediareader2.services.db.dao.favoritecategories.FavoriteCategory
 import tk.pokatomnik.mrakopediareader2.services.db.dao.favoritestories.FavoriteStory
 import tk.pokatomnik.mrakopediareader2.services.db.dao.favoritestories.FavoriteStoriesDAO
 
 @Database(
-    entities = [FavoriteStory::class],
+    entities = [FavoriteStory::class, FavoriteCategory::class],
     version = 1,
     exportSchema = true,
 // uncomment when needed
@@ -21,6 +23,8 @@ import tk.pokatomnik.mrakopediareader2.services.db.dao.favoritestories.FavoriteS
 )
 abstract class MrakopediaDatabase : RoomDatabase() {
     abstract fun favoriteStoriesDAO(): FavoriteStoriesDAO
+
+    abstract fun favoriteCategoriesDAO(): FavoriteCategoriesDAO
 
 //    @DeleteColumn(tableName = "favorite_stories", columnName = "title")
 //    @DeleteColumn(tableName = "recent", columnName = "url")

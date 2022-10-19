@@ -15,8 +15,8 @@ interface FavoriteStoriesDAO {
     suspend fun has(pageTitle: String): FavoriteStory?
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun add(favorite: FavoriteStory)
+    suspend fun add(favoriteStory: FavoriteStory)
 
     @Delete
-    suspend fun delete(favorite: FavoriteStory)
+    suspend fun delete(favoriteStory: FavoriteStory)
 }

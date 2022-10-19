@@ -43,7 +43,7 @@ fun Story(
         val isCurrentFavorite = favoriteStoriesDAO.has(selectedPageTitle) != null
         setIsFavorite(isCurrentFavorite)
     }
-    val onToggleFavorite: (isFavorite: Boolean) -> Unit = {
+    val onFavoritePress: (isFavorite: Boolean) -> Unit = {
         setIsFavorite(it)
         coroutineScope.launch {
             if (it) {
@@ -128,7 +128,7 @@ fun Story(
                     maxFontSize = pagePreferences.maxFontSize,
                     minFontSize = pagePreferences.minFontSize,
                     isFavorite = isFavorite,
-                    onToggleFavorite = onToggleFavorite,
+                    onFavoritePress = onFavoritePress,
                 )
             }
         }

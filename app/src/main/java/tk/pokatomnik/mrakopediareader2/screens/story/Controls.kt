@@ -24,7 +24,7 @@ internal fun BoxScope.Controls(
     maxFontSize: Int,
     minFontSize: Int,
     isFavorite: Boolean,
-    onToggleFavorite: (isFavorite: Boolean) -> Unit
+    onFavoritePress: (isFavorite: Boolean) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -39,7 +39,7 @@ internal fun BoxScope.Controls(
     ) {
         FloatingActionButton(
             modifier = Modifier.padding(horizontal = 8.dp),
-            onClick = { onToggleFavorite(!isFavorite) }
+            onClick = { onFavoritePress(!isFavorite) }
         ) {
             Icon(
                 imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,

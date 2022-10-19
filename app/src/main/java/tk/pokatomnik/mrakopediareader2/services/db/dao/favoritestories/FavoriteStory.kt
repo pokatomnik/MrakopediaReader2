@@ -11,6 +11,6 @@ import androidx.room.PrimaryKey
         Index(value = ["title"], unique = true)
     ]
 )
-class FavoriteStory(
+data class FavoriteStory(
      @PrimaryKey @ColumnInfo(name = "title") val title: String,
 )

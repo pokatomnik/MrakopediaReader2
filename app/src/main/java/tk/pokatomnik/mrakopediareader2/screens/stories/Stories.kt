@@ -5,18 +5,17 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.People
-import androidx.compose.material.icons.filled.SortByAlpha
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.Timer
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material.icons.filled.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
+import tk.pokatomnik.mrakopediareader2.services.db.dao.favoritecategories.FavoriteCategory
+import tk.pokatomnik.mrakopediareader2.services.db.rememberDatabase
 import tk.pokatomnik.mrakopediareader2.services.index.rememberMrakopediaIndex
 import tk.pokatomnik.mrakopediareader2.services.preferences.rememberPreferences
 import tk.pokatomnik.mrakopediareader2.ui.components.*
@@ -26,6 +25,9 @@ fun Stories(
     selectedCategoryTitle: String,
     onSelectPage: (pageTitle: String) -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val mrakopediaDatabase = rememberDatabase()
+    val favoriteCategoriesDAO = mrakopediaDatabase.favoriteCategoriesDAO()
     val preferences = rememberPreferences()
     val (sorting, setSorting) = remember {
         mutableStateOf(
@@ -34,6 +36,13 @@ fun Stories(
     }
     val mrakopediaIndex = rememberMrakopediaIndex()
     val category = mrakopediaIndex.getCategory(selectedCategoryTitle)
+
+    val (isFavorite, setIsFavorite) = remember { mutableStateOf(false) }
+
+    LaunchedEffect(selectedCategoryTitle) {
+        val favorite = favoriteCategoriesDAO.has(selectedCategoryTitle)
+        setIsFavorite(favorite != null)
+    }
 
     LaunchedEffect(sorting) {
         preferences.storiesPreferences.sortingType = sorting.toString()
@@ -50,9 +59,26 @@ fun Stories(
             }
     }
 
+    val updateFavoriteStatus: (isFavorite: Boolean) -> Unit = { newFavoriteStatus ->
+        setIsFavorite(newFavoriteStatus)
+        coroutineScope.launch {
+            if (newFavoriteStatus) {
+                favoriteCategoriesDAO.add(FavoriteCategory(selectedCategoryTitle))
+            } else {
+                favoriteCategoriesDAO.delete(FavoriteCategory(selectedCategoryTitle))
+            }
+        }
+    }
+
     return PageContainer(
-        header = {
-            PageTitle(title = "Категория: $selectedCategoryTitle")
+        header = { PageTitle(title = "Категория: $selectedCategoryTitle") },
+        headerButton = {
+            IconButton(onClick = { updateFavoriteStatus(!isFavorite) }) {
+                Icon(
+                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                    contentDescription = if (isFavorite) "В избранном" else "Добавить в избранное"
+                )
+            }
         }
     ) {
         Row(

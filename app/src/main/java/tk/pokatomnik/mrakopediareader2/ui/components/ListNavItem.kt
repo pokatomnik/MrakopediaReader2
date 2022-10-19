@@ -37,9 +37,11 @@ fun ListNavItem(
             .padding(horizontal = LIST_ITEM_PADDING.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .weight(1f)) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
             Text(
                 text = title,
                 maxLines = 1,

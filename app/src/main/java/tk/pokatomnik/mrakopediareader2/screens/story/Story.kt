@@ -10,17 +10,17 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
+import tk.pokatomnik.mrakopediareader2.services.db.dao.favoritestories.FavoriteStory
+import tk.pokatomnik.mrakopediareader2.services.db.rememberDatabase
 import tk.pokatomnik.mrakopediareader2.services.index.rememberMrakopediaIndex
 import tk.pokatomnik.mrakopediareader2.services.preferences.page.rememberContentTextSize
+import tk.pokatomnik.mrakopediareader2.services.preferences.rememberPreferences
 import tk.pokatomnik.mrakopediareader2.ui.components.KeepScreenOn
 import tk.pokatomnik.mrakopediareader2.ui.components.PageContainer
 
@@ -31,15 +31,34 @@ fun Story(
     onNavigateToPage: (pageTitle: String) -> Unit,
     onNavigateToCategory: (categoryTitle: String) -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
+    val favoriteStoriesDAO = rememberDatabase().favoriteStoriesDAO()
+    val pagePreferences = rememberPreferences().pagePreferences
+    val pageContentSize = rememberContentTextSize()
+    val category = rememberMrakopediaIndex()
+        .getCategory(selectedCategoryTitle)
+
+    val (isFavorite, setIsFavorite) = remember { mutableStateOf(false) }
+    LaunchedEffect(selectedPageTitle) {
+        val isCurrentFavorite = favoriteStoriesDAO.has(selectedPageTitle) != null
+        setIsFavorite(isCurrentFavorite)
+    }
+    val onFavoritePress: (isFavorite: Boolean) -> Unit = {
+        setIsFavorite(it)
+        coroutineScope.launch {
+            if (it) {
+                favoriteStoriesDAO.add(FavoriteStory(selectedPageTitle))
+            } else {
+                favoriteStoriesDAO.delete(FavoriteStory(selectedPageTitle))
+            }
+        }
+    }
+
     val (controlsDisplayed, setControlsDisplayed) = remember { mutableStateOf(false) }
     val controlsAlpha = animateFloatAsState(
         targetValue = if (controlsDisplayed) 1f else 0f
     )
 
-    val coroutineScope = rememberCoroutineScope()
-    val pageContentSize = rememberContentTextSize()
-    val category = rememberMrakopediaIndex()
-        .getCategory(selectedCategoryTitle)
     val content = category
         .getPageContentByTitle(selectedPageTitle)
     val pageMeta = category.getPageMetaByTitle(selectedPageTitle)
@@ -103,7 +122,14 @@ fun Story(
                     }
                     Source(pageTitle = selectedPageTitle)
                 }
-                Controls(alpha = controlsAlpha.value, pageContentSize = pageContentSize)
+                Controls(
+                    alpha = controlsAlpha.value,
+                    pageContentSize = pageContentSize,
+                    maxFontSize = pagePreferences.maxFontSize,
+                    minFontSize = pagePreferences.minFontSize,
+                    isFavorite = isFavorite,
+                    onFavoritePress = onFavoritePress,
+                )
             }
         }
     }

@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
@@ -21,6 +23,7 @@ import tk.pokatomnik.mrakopediareader2.ui.components.PageTitle
 
 @Composable
 fun Categories(
+    onPressSearch: () -> Unit,
     onSelectCategoryTitle: (categoryTitle: String) -> Unit,
 ) {
     val preferences = rememberPreferences()
@@ -46,8 +49,14 @@ fun Categories(
     }
 
     PageContainer(
-        header = {
-            PageTitle(title = "Категории")
+        header = { PageTitle(title = "Категории") },
+        headerButton = {
+            IconButton(onClick = onPressSearch) {
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = "Назад к поиску"
+                )
+            }
         }
     ) {
         Row(

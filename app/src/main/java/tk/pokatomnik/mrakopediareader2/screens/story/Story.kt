@@ -10,7 +10,9 @@ import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -68,6 +70,10 @@ private fun StoryInternal(
 
     val scrollState = rememberScrollState()
 
+    val scrollPositionAlpha = animateFloatAsState(
+        targetValue = if (scrollState.isScrollInProgress) 0.7f else 0f
+    )
+
     LaunchedEffect(scrollPosition) {
         scrollState.animateScrollTo(scrollPosition)
     }
@@ -92,6 +98,14 @@ private fun StoryInternal(
     KeepScreenOn {
         PageContainer {
             Box(modifier = Modifier.fillMaxSize()) {
+                Row(
+                    modifier = Modifier.align(Alignment.TopEnd).alpha(scrollPositionAlpha.value),
+                ) {
+                    Text(
+                        text = "${100 * scrollState.value / scrollState.maxValue}%",
+                        textAlign = TextAlign.End
+                    )
+                }
                 Column(
                     modifier = Modifier
                         .fillMaxSize()

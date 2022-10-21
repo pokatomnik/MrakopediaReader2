@@ -22,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import tk.pokatomnik.mrakopediareader2.screens.categories.Categories
 import tk.pokatomnik.mrakopediareader2.screens.favorites.Favorites
+import tk.pokatomnik.mrakopediareader2.screens.history.History
 import tk.pokatomnik.mrakopediareader2.screens.search.Search
 import tk.pokatomnik.mrakopediareader2.screens.settings.Settings
 import tk.pokatomnik.mrakopediareader2.screens.story.Story
@@ -94,6 +95,12 @@ class MainActivity : ComponentActivity() {
                                 title = "Избранное",
                                 selected = currentDestination.on("favorites"),
                                 onClick = { navController.navigateSingle("favorites") }
+                            )
+                            BottomNavItem(
+                                icon = Icons.Filled.History,
+                                title = "История",
+                                selected = currentDestination.on("history"),
+                                onClick = { navController.navigateSingle("history") }
                             )
                             BottomNavItem(
                                 icon = Icons.Filled.Settings,
@@ -176,6 +183,15 @@ class MainActivity : ComponentActivity() {
                                         setCategoryTitle(it)
                                         setPageTitle(null)
                                         navController.navigateSingle("stories")
+                                    }
+                                )
+                            }
+                            composable(route = "history") {
+                                History(
+                                    onSelectPage = {
+                                        setCategoryTitle(mrakopediaIndex.getGeneralCategoryTitle())
+                                        setPageTitle(it)
+                                        navController.navigateSingle("story")
                                     }
                                 )
                             }

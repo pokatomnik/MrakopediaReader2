@@ -25,14 +25,17 @@ import tk.pokatomnik.mrakopediareader2.ui.components.KeepScreenOn
 import tk.pokatomnik.mrakopediareader2.ui.components.PageContainer
 
 @Composable
-fun Story(
+private fun StoryInternal(
+    scrollPosition: Int,
     selectedCategoryTitle: String,
     selectedPageTitle: String,
     onNavigateToPage: (pageTitle: String) -> Unit,
     onNavigateToCategory: (categoryTitle: String) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val favoriteStoriesDAO = rememberDatabase().favoriteStoriesDAO()
+    val mrakopediaDatabase = rememberDatabase()
+    val favoriteStoriesDAO = mrakopediaDatabase.favoriteStoriesDAO()
+    val historyDAO = mrakopediaDatabase.historyDAO()
     val pagePreferences = rememberPreferences().pagePreferences
     val pageContentSize = rememberContentTextSize()
     val category = rememberMrakopediaIndex()
@@ -59,13 +62,29 @@ fun Story(
         targetValue = if (controlsDisplayed) 1f else 0f
     )
 
-    val content = category
-        .getPageContentByTitle(selectedPageTitle)
+    val content = remember(selectedPageTitle) { category.getPageContentByTitle(selectedPageTitle) }
     val pageMeta = category.getPageMetaByTitle(selectedPageTitle)
     val seeAlso = pageMeta?.seeAlso ?: setOf()
     val categories = pageMeta?.categories ?: setOf()
 
     val scrollState = rememberScrollState()
+
+    LaunchedEffect(scrollPosition) {
+        scrollState.animateScrollTo(scrollPosition)
+    }
+
+    if (scrollState.isScrollInProgress) {
+        DisposableEffect(Unit) {
+            onDispose {
+                coroutineScope.launch {
+                    historyDAO.setScrollPosition(
+                        selectedPageTitle,
+                        scrollState.value
+                    )
+                }
+            }
+        }
+    }
 
     if (scrollState.isScrollInProgress && controlsDisplayed) {
         setControlsDisplayed(false)
@@ -104,12 +123,7 @@ fun Story(
                     if (seeAlso.isNotEmpty()) {
                         SeeAlso(
                             seeAlso = seeAlso,
-                            onClick = {
-                                onNavigateToPage(it)
-                                coroutineScope.launch {
-                                    scrollState.animateScrollTo(0)
-                                }
-                            }
+                            onClick = { onNavigateToPage(it) }
                         )
                     }
                     if (categories.isNotEmpty()) {
@@ -132,5 +146,23 @@ fun Story(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun Story(
+    selectedCategoryTitle: String,
+    selectedPageTitle: String,
+    onNavigateToPage: (pageTitle: String) -> Unit,
+    onNavigateToCategory: (categoryTitle: String) -> Unit
+) {
+    ScrollPosition(pageTitle = selectedPageTitle) { scrollPosition ->  
+        StoryInternal(
+            scrollPosition = scrollPosition,
+            selectedCategoryTitle = selectedCategoryTitle,
+            selectedPageTitle = selectedPageTitle,
+            onNavigateToPage = onNavigateToPage,
+            onNavigateToCategory = onNavigateToCategory
+        )
     }
 }

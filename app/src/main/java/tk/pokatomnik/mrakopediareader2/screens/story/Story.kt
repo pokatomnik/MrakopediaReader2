@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
@@ -105,21 +104,17 @@ private fun StoryInternal(
                             setControlsDisplayed(!controlsDisplayed)
                         }
                 ) {
-                    SelectionContainer {
-                        Text(
-                            text = selectedPageTitle,
-                            style = MaterialTheme.typography.h5,
-                            textAlign = TextAlign.Center,
-                        )
-                    }
+                    Text(
+                        text = selectedPageTitle,
+                        style = MaterialTheme.typography.h5,
+                        textAlign = TextAlign.Center,
+                    )
                     Divider(modifier = Modifier.fillMaxWidth())
-                    SelectionContainer {
-                        Text(
-                            textAlign = TextAlign.Justify,
-                            text = content,
-                            fontSize = pageContentSize.value.sp
-                        )
-                    }
+                    Text(
+                        textAlign = TextAlign.Justify,
+                        text = content,
+                        fontSize = pageContentSize.value.sp
+                    )
                     if (seeAlso.isNotEmpty()) {
                         SeeAlso(
                             seeAlso = seeAlso,

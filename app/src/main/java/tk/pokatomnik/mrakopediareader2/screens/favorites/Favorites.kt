@@ -1,181 +1,79 @@
 package tk.pokatomnik.mrakopediareader2.screens.favorites
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Divider
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material.ScrollableTabRow
+import androidx.compose.material.Tab
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
-import tk.pokatomnik.mrakopediareader2.services.db.dao.favoritecategories.FavoriteCategory
-import tk.pokatomnik.mrakopediareader2.services.db.dao.favoritestories.FavoriteStory
-import tk.pokatomnik.mrakopediareader2.services.db.rememberDatabase
-import tk.pokatomnik.mrakopediareader2.services.index.rememberMrakopediaIndex
-import tk.pokatomnik.mrakopediareader2.ui.components.LIST_ITEM_PADDING
-import tk.pokatomnik.mrakopediareader2.ui.components.ListItemWithClickableIcon
 import tk.pokatomnik.mrakopediareader2.ui.components.PageContainer
 import tk.pokatomnik.mrakopediareader2.ui.components.PageTitle
 
+const val SAVED_FAVORITES = 0
+const val STORIES_OF_MONTH = 1
+const val GOOD_STORIES = 2
+
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun Favorites(
-    onFavoriteStoryClick: (pageTitle: String) -> Unit,
-    onFavoriteCategoryClick: (categoryTitle: String) -> Unit,
+    onStoryClick: (pageTitle: String) -> Unit,
+    onCategoryClick: (categoryTitle: String) -> Unit,
 ) {
-    val mrakopediaIndex = rememberMrakopediaIndex()
-    val generalCategory = mrakopediaIndex.getCategory(
-        mrakopediaIndex.getGeneralCategoryTitle()
-    )
-    val mrakopediaDatabase = rememberDatabase()
-    val favoriteStoriesDAO = mrakopediaDatabase.favoriteStoriesDAO()
-    val favoriteCategoriesDAO = mrakopediaDatabase.favoriteCategoriesDAO()
-
-    val coroutineScope = rememberCoroutineScope()
-
-    val (favoriteStories, setFavoriteStories) = remember {
-        mutableStateOf<Map<String, Boolean>?>(null)
-    }
-
-    val (favoriteCategories, setFavoriteCategories) = remember {
-        mutableStateOf<Map<String, Boolean>?>(null)
-    }
-
-    val refresh = {
-        coroutineScope.launch {
-            val favoriteStoriesFromDatabase = favoriteStoriesDAO
-                .getAll()
-                .reversed()
-                .fold(mutableMapOf<String, Boolean>()) { acc, current ->
-                    acc.apply { set(current.title, true) }
-                }
-            val favoriteCategoriesFromDatabase = favoriteCategoriesDAO
-                .getAll()
-                .reversed()
-                .fold(mutableMapOf<String, Boolean>()) { acc, current ->
-                    acc.apply { set(current.title, true) }
-                }
-            setFavoriteStories(favoriteStoriesFromDatabase)
-            setFavoriteCategories(favoriteCategoriesFromDatabase)
-        }
-    }
-
-    val setIsFavoriteStory: (pageTitle: String, isFavorite: Boolean) -> Unit = { pageTitle, isFavorite ->
-        val newMap = favoriteStories?.toMutableMap()?.apply {
-            set(pageTitle, isFavorite)
-        }
-        setFavoriteStories(newMap)
-        coroutineScope.launch {
-            if (isFavorite) {
-                favoriteStoriesDAO.add(FavoriteStory(pageTitle))
-            } else {
-                favoriteStoriesDAO.delete(FavoriteStory(pageTitle))
-            }
-        }
-    }
-
-    val setIsFavoriteCategory: (categoryTitle: String, isFavorite: Boolean) -> Unit = { categoryTitle, isFavorite ->
-        val newMap = favoriteCategories?.toMutableMap()?.apply {
-            set(categoryTitle, isFavorite)
-        }
-        setFavoriteCategories(newMap)
-        coroutineScope.launch {
-            if (isFavorite) {
-                favoriteCategoriesDAO.add(FavoriteCategory(categoryTitle))
-            } else {
-                favoriteCategoriesDAO.delete(FavoriteCategory(categoryTitle))
-            }
-        }
-    }
-
-    LaunchedEffect(Unit) { refresh() }
+    val scope = rememberCoroutineScope()
+    val pagerState = rememberPagerState(SAVED_FAVORITES)
 
     PageContainer(
         header = { PageTitle(title = "Избранное") }
     ) {
-        if (favoriteStories == null && favoriteCategories == null) {
-            return@PageContainer
-        }
-
-        if (favoriteStories.isNullOrEmpty() && favoriteCategories.isNullOrEmpty()) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(text = "В Избранном пусто")
-            }
-            return@PageContainer
-        }
-
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(false),
-            onRefresh = { refresh() },
-            modifier = Modifier.fillMaxSize(),
-            swipeEnabled = true,
+        ScrollableTabRow(
+            selectedTabIndex = pagerState.currentPage,
+            modifier = Modifier
+                .wrapContentWidth()
+                .height(48.dp),
+            edgePadding = 16.dp
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-            ) {
-                if (!favoriteStories.isNullOrEmpty()) {
-                    Spacer(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(16.dp))
-                    Column(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp)) {
-                        Text(
-                            text = "Избранные истории",
-                            modifier = Modifier.padding(horizontal = LIST_ITEM_PADDING.dp)
-                        )
-                        Divider(modifier = Modifier.fillMaxWidth())
-                        for ((favoriteStoryTitle, isFavorite) in favoriteStories) {
-                            val pageMeta = generalCategory.getPageMetaByTitle(favoriteStoryTitle)
-                            ListItemWithClickableIcon(
-                                title = favoriteStoryTitle,
-                                description = pageMeta?.formatDescription(),
-                                icon = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                                contentDescription = if (isFavorite) "В избранном" else "Добавить в избранное",
-                                onItemClick = { onFavoriteStoryClick(favoriteStoryTitle) },
-                                onIconClick = { setIsFavoriteStory(favoriteStoryTitle, !isFavorite) }
-                            )
-                        }
-                    }
-                }
-
-                if (!favoriteCategories.isNullOrEmpty()) {
-                    Spacer(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(16.dp))
-                    Column(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp)) {
-                        Text(
-                            text = "Избранные категориии",
-                            modifier = Modifier.padding(horizontal = LIST_ITEM_PADDING.dp)
-                        )
-                        Divider(modifier = Modifier.fillMaxWidth())
-                        for ((favoriteCategoryTitle, isFavorite) in favoriteCategories) {
-                            val category = mrakopediaIndex.getCategory(favoriteCategoryTitle)
-                            ListItemWithClickableIcon(
-                                title = favoriteCategoryTitle,
-                                description = category.formatDescription(),
-                                icon = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                                contentDescription = if (isFavorite) "В избранном" else "Удалить из избранного",
-                                onItemClick = { onFavoriteCategoryClick(favoriteCategoryTitle) },
-                                onIconClick = { setIsFavoriteCategory(favoriteCategoryTitle, !isFavorite) }
-                            )
-                        }
-                    }
-                }
+            Tab(
+                selected = pagerState.currentPage == SAVED_FAVORITES,
+                onClick = {
+                    scope.launch { pagerState.animateScrollToPage(SAVED_FAVORITES) }
+                },
+                text = { Text(text = "Избранное") }
+            )
+            Tab(
+                selected = pagerState.currentPage == STORIES_OF_MONTH,
+                onClick = {
+                    scope.launch { pagerState.animateScrollToPage(STORIES_OF_MONTH) }
+                },
+                text = { Text(text = "Истории месяца") }
+            )
+            Tab(
+                selected = pagerState.currentPage == GOOD_STORIES,
+                onClick = {
+                    scope.launch { pagerState.animateScrollToPage(GOOD_STORIES) }
+                },
+                text = { Text(text = "Хорошие истории") }
+            )
+        }
+        
+        HorizontalPager(count = 3, state = pagerState) {
+            if (it == SAVED_FAVORITES) {
+                SavedFavorites(
+                    onFavoriteStoryClick = onStoryClick,
+                    onFavoriteCategoryClick = onCategoryClick
+                )
+            }
+            if (it == STORIES_OF_MONTH) {
+                StoriesOfMonth(onStoryTitleClick = onStoryClick)
+            }
+            if (it == GOOD_STORIES) {
+                GoodStories(onStoryClick = onStoryClick)
             }
         }
     }

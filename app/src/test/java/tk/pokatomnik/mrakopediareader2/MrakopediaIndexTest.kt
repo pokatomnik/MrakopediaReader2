@@ -140,6 +140,24 @@ class MrakopediaIndexTest {
         val avgVoted = MrakopediaIndex(MockTextAssetResolver()).getCategory("category0").avgVoted
         assertEquals(avgVoted, 33)
     }
+
+    @Test
+    fun `Check if good stories are parsed`() {
+        val goodStories = MrakopediaIndex(MockTextAssetResolver()).getGoodStories()
+        assertEquals(
+            listOf("title0"),
+            goodStories,
+        )
+    }
+
+    @Test
+    fun `Check if stories of month are parsed`() {
+        val storiesOfMonth = MrakopediaIndex(MockTextAssetResolver()).getStoriesOfMonth()
+        assertEquals(
+            listOf("title1"),
+            storiesOfMonth
+        )
+    }
 }
 
 class MockTextAssetResolver : TextAssetResolver {

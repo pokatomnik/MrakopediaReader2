@@ -1,42 +1,93 @@
 package tk.pokatomnik.mrakopediareader2.services.index
 
 import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import tk.pokatomnik.mrakopediareader2.domain.Category
+import tk.pokatomnik.mrakopediareader2.domain.Index
 import tk.pokatomnik.mrakopediareader2.domain.PageMeta
+import tk.pokatomnik.mrakopediareader2.domain.StoriesOfMonth
 
 fun resolveIndex(
     generalCategoryTitle: String,
     jsonString: String,
     makeCategory: (name: String, categorySource: Map<String, PageMeta>) -> Category
-): Map<String, Category> {
+): Index {
     return try {
-        val mrakopediaIndex = mutableMapOf<String, Category>()
         val jsonObject = JsonParser.parseString(jsonString).asJsonObject
-        val categories = jsonObject.keySet()
 
-        val generalCategory = mutableMapOf<String, PageMeta>()
+        val goodStories = getGoodStories(jsonObject)
+        val storiesOfMonth = getStoriesOfMonth(jsonObject)
+        val mrakopediaIndex = jsonObjectToMrakopediaIndex(
+            generalCategoryTitle = generalCategoryTitle,
+            jsonObject = jsonObject,
+            makeCategory = makeCategory
+        )
 
-        for (category in categories) {
-            val pageMetaJSONArray = jsonObject.getAsJsonArray(category)
-            val pagesMetaMap = mutableMapOf<String, PageMeta>()
-            for (pageMetaJSONElement in pageMetaJSONArray) {
-                val pageMeta = jsonObjectToPageMeta(pageMetaJSONElement)
-                pageMeta?.let {
-                    pagesMetaMap[it.title] = it
-                    generalCategory[it.title] = it
-                }
-            }
-            if (pagesMetaMap.isNotEmpty()) {
-                mrakopediaIndex[category] = makeCategory(category, pagesMetaMap)
+        Index(
+            mrakopediaIndex = mrakopediaIndex,
+            storiesOfMonth = StoriesOfMonth(
+                storiesOfMonth = storiesOfMonth,
+                goodStories = goodStories
+            )
+        )
+    } catch (e: Exception) {
+        Index(
+            mrakopediaIndex = mapOf(),
+            storiesOfMonth = StoriesOfMonth(
+                storiesOfMonth = listOf(),
+                goodStories = listOf()
+            )
+        )
+    }
+}
+
+fun getGoodStories(jsonObject: JsonObject): List<String> {
+    val storiesOfMonthObject = jsonObject.getAsJsonObject("storiesOfMonth")
+    val jsonArray = storiesOfMonthObject.getAsJsonArray("goodStories")
+    val goodStories = mutableListOf<String>()
+    for (goodStoryTitle in jsonArray) {
+        goodStories.add(goodStoryTitle.asString)
+    }
+    return goodStories
+}
+
+fun getStoriesOfMonth(jsonObject: JsonObject): List<String> {
+    val storiesOfMonthObject = jsonObject.getAsJsonObject("storiesOfMonth")
+    val jsonArray = storiesOfMonthObject.getAsJsonArray("storiesOfMonth")
+    val storiesOfMonth = mutableListOf<String>()
+    for (storyOfMonth in jsonArray) {
+        storiesOfMonth.add(storyOfMonth.asString)
+    }
+    return storiesOfMonth
+}
+
+fun jsonObjectToMrakopediaIndex(
+    generalCategoryTitle: String,
+    jsonObject: JsonObject,
+    makeCategory: (name: String, categorySource: Map<String, PageMeta>) -> Category
+): Map<String, Category> {
+    val mrakopediaIndexObject = jsonObject.getAsJsonObject("mrakopediaIndex")
+    val mrakopediaIndex = mutableMapOf<String, Category>()
+    val categories = mrakopediaIndexObject.keySet()
+
+    val generalCategory = mutableMapOf<String, PageMeta>()
+    for (category in categories) {
+        val pageMetaJSONArray = mrakopediaIndexObject.getAsJsonArray(category)
+        val pagesMetaMap = mutableMapOf<String, PageMeta>()
+        for (pageMetaJSONElement in pageMetaJSONArray) {
+            val pageMeta = jsonObjectToPageMeta(pageMetaJSONElement)
+            pageMeta?.let {
+                pagesMetaMap[it.title] = it
+                generalCategory[it.title] = it
             }
         }
-
-        mrakopediaIndex[generalCategoryTitle] = makeCategory(generalCategoryTitle, generalCategory)
-
-        mrakopediaIndex
-    } catch (e: Exception) {
-        mapOf()
+        if (pagesMetaMap.isNotEmpty()) {
+            mrakopediaIndex[category] = makeCategory(category, pagesMetaMap)
+        }
     }
+    mrakopediaIndex[generalCategoryTitle] = makeCategory(generalCategoryTitle, generalCategory)
+    return mrakopediaIndex
 }
 
 fun jsonObjectToPageMeta(jsonObject: JsonElement): PageMeta? {

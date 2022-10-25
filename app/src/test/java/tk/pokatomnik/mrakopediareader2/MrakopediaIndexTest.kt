@@ -3,7 +3,7 @@ package tk.pokatomnik.mrakopediareader2
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import tk.pokatomnik.mrakopediareader2.domain.PageMeta
-import tk.pokatomnik.mrakopediareader2.services.index.Category
+import tk.pokatomnik.mrakopediareader2.domain.Category
 import tk.pokatomnik.mrakopediareader2.services.index.MrakopediaIndex
 import tk.pokatomnik.mrakopediareader2.services.textassetresolver.TextAssetResolver
 import java.io.IOException
@@ -119,11 +119,14 @@ class MrakopediaIndexTest {
     fun `Check if categories getter works correctly`() {
         val category0PagesTotal = MrakopediaIndex(MockTextAssetResolver())
 
-        assertEquals(category0PagesTotal.getCategoryNames(), setOf(
-            "category0",
-            "category1",
-            "Все страницы"
-        ))
+        assertEquals(
+            setOf(
+                "category0",
+                "category1",
+                "Все страницы"
+            ),
+            category0PagesTotal.getCategoryNames()
+        )
     }
 
     @Test
@@ -137,6 +140,24 @@ class MrakopediaIndexTest {
         val avgVoted = MrakopediaIndex(MockTextAssetResolver()).getCategory("category0").avgVoted
         assertEquals(avgVoted, 33)
     }
+
+    @Test
+    fun `Check if good stories are parsed`() {
+        val goodStories = MrakopediaIndex(MockTextAssetResolver()).getGoodStories()
+        assertEquals(
+            listOf("title0"),
+            goodStories,
+        )
+    }
+
+    @Test
+    fun `Check if stories of month are parsed`() {
+        val storiesOfMonth = MrakopediaIndex(MockTextAssetResolver()).getStoriesOfMonth()
+        assertEquals(
+            listOf("title1"),
+            storiesOfMonth
+        )
+    }
 }
 
 class MockTextAssetResolver : TextAssetResolver {
@@ -144,38 +165,44 @@ class MockTextAssetResolver : TextAssetResolver {
         if (filePath == "content/index.json") {
             return """
                 {
-                    "category0": [{
-                        "title": "title0",
-                        "rating": 99,
-                        "voted": 99,
-                        "charactersInPage": 100,
-                        "contentId": "0",
-                        "categories": ["category0", "category1"],
-                        "seeAlso": ["foo", "bar"]
-                    }, {
-                        "title": "title1",
-                        "charactersInPage": 200,
-                        "contentId": "1",
-                        "categories": [],
-                        "seeAlso": []
-                    }, {
-                        "title": "title2",
-                        "rating": 0,
-                        "voted": 0,
-                        "charactersInPage": 300,
-                        "contentId": "2",
-                        "categories": [],
-                        "seeAlso": []
-                    }],
-                    "category1": [{
-                        "title": "title0",
-                        "rating": 50,
-                        "voted": 50,
-                        "charactersInPage": 100,
-                        "contentId": "0",
-                        "categories": ["category0", "category1"],
-                        "seeAlso": ["foo", "bar"]
-                    }]
+                    "mrakopediaIndex": {
+                        "category0": [{
+                            "title": "title0",
+                            "rating": 99,
+                            "voted": 99,
+                            "charactersInPage": 100,
+                            "contentId": "0",
+                            "categories": ["category0", "category1"],
+                            "seeAlso": ["foo", "bar"]
+                        }, {
+                            "title": "title1",
+                            "charactersInPage": 200,
+                            "contentId": "1",
+                            "categories": [],
+                            "seeAlso": []
+                        }, {
+                            "title": "title2",
+                            "rating": 0,
+                            "voted": 0,
+                            "charactersInPage": 300,
+                            "contentId": "2",
+                            "categories": [],
+                            "seeAlso": []
+                        }],
+                        "category1": [{
+                            "title": "title0",
+                            "rating": 50,
+                            "voted": 50,
+                            "charactersInPage": 100,
+                            "contentId": "0",
+                            "categories": ["category0", "category1"],
+                            "seeAlso": ["foo", "bar"]
+                        }]
+                    },
+                    "storiesOfMonth": {
+                        "goodStories": ["title0"],
+                        "storiesOfMonth": ["title1"] 
+                    }
                 }
             """.trimIndent()
         }

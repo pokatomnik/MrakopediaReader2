@@ -174,12 +174,12 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(route = "favorites") {
                                 Favorites(
-                                    onFavoriteStoryClick = {
+                                    onStoryClick = {
                                         setCategoryTitle(mrakopediaIndex.getGeneralCategoryTitle())
                                         setPageTitle(it)
                                         navController.navigateSingle("story")
                                     },
-                                    onFavoriteCategoryClick = {
+                                    onCategoryClick = {
                                         setCategoryTitle(it)
                                         setPageTitle(null)
                                         navController.navigateSingle("stories")

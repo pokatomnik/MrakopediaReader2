@@ -1,6 +1,6 @@
 package tk.pokatomnik.mrakopediareader2.screens.categories
 
-import tk.pokatomnik.mrakopediareader2.services.index.Category
+import tk.pokatomnik.mrakopediareader2.domain.Category
 import tk.pokatomnik.mrakopediareader2.ui.components.SortDirection
 
 internal enum class SortingType {

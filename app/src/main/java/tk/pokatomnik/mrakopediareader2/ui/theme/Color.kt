@@ -2,7 +2,14 @@ package tk.pokatomnik.mrakopediareader2.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple200 = Color(0xFFBB86FC)
-val Purple500 = Color(0xFF6200EE)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
+// Light
+val PrimaryLight = Color(0xff607d8b)
+val PrimaryVariantLight = Color(0xff8eacbb)
+val SecondaryLight = Color(0xff039be5)
+val SecondaryVariantLight = Color(0xff63ccff)
+
+// Dark
+val PrimaryDark = Color(0xffb0bec5)
+val PrimaryVariantDark = Color(0xffe2f1f8)
+val SecondaryDark = Color(0xff039be5)
+val SecondaryVariantDark = Color(0xff63ccff)

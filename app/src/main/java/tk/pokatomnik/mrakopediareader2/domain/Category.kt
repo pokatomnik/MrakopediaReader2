@@ -1,6 +1,5 @@
-package tk.pokatomnik.mrakopediareader2.services.index
+package tk.pokatomnik.mrakopediareader2.domain
 
-import tk.pokatomnik.mrakopediareader2.domain.PageMeta
 import tk.pokatomnik.mrakopediareader2.services.textassetresolver.TextAssetResolver
 import tk.pokatomnik.mrakopediareader2.ui.components.ratingToEmoji
 

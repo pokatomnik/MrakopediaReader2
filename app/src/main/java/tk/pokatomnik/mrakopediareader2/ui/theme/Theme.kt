@@ -13,24 +13,17 @@ import tk.pokatomnik.mrakopediareader2.services.preferences.global.rememberTheme
 import tk.pokatomnik.mrakopediareader2.services.preferences.rememberPreferences
 
 private val DarkColorPalette = darkColors(
-    primary = Purple200,
-    primaryVariant = Purple700,
-    secondary = Teal200
+    primary = PrimaryDark,
+    primaryVariant = PrimaryVariantDark,
+    secondary = SecondaryDark,
+    secondaryVariant = SecondaryVariantDark
 )
 
 private val LightColorPalette = lightColors(
-    primary = Purple500,
-    primaryVariant = Purple700,
-    secondary = Teal200
-
-    /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
+    primary = PrimaryLight,
+    primaryVariant = PrimaryVariantLight,
+    secondary = SecondaryLight,
+    secondaryVariant = SecondaryVariantLight
 )
 
 @Composable

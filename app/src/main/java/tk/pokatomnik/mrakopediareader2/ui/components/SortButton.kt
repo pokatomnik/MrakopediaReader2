@@ -1,8 +1,8 @@
 package tk.pokatomnik.mrakopediareader2.ui.components
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
 import androidx.compose.material.Icon
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
@@ -23,7 +23,7 @@ fun SortButton(
     direction: SortDirection?,
     onSortDirectionChange: (sortDirection: SortDirection) -> Unit
 ) {
-    Button(
+    OutlinedButton(
         modifier = Modifier.width(72.dp),
         onClick = {
             val newSortDirection = when (direction) {

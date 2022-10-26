@@ -4,6 +4,8 @@ import kotlinx.coroutines.*
 import tk.pokatomnik.mrakopediareader2.domain.Category
 import tk.pokatomnik.mrakopediareader2.domain.PageMeta
 import tk.pokatomnik.mrakopediareader2.services.textassetresolver.TextAssetResolver
+import java.lang.Integer.min
+import kotlin.random.Random
 
 
 class MrakopediaIndex(
@@ -48,6 +50,16 @@ class MrakopediaIndex(
 
     fun getStoriesOfMonth(): List<String> {
         return index.storiesOfMonth.storiesOfMonth
+    }
+
+    fun getRandomTitles(desiredAmount: Int): Set<String> {
+        val generalCategoryPages  = getCategory(getGeneralCategoryTitle()).pages
+        val set = mutableSetOf<String>()
+        while (set.size < min(desiredAmount, generalCategoryPages.size)) {
+            val randomTitle = generalCategoryPages.random(Random(System.currentTimeMillis())).title
+            set.add(randomTitle)
+        }
+        return set
     }
 
     private fun searchForCategoriesAsync(searchString: String): Deferred<Collection<Category>> {

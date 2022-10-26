@@ -158,6 +158,18 @@ class MrakopediaIndexTest {
             storiesOfMonth
         )
     }
+
+    @Test
+    fun `Check random pages amount`() {
+        val randomPages = MrakopediaIndex(MockTextAssetResolver()).getRandomTitles(2)
+        assertEquals(2, randomPages.size)
+    }
+
+    @Test
+    fun `Test required random pages amount exceeded total pages`() {
+        val randomPages = MrakopediaIndex(MockTextAssetResolver()).getRandomTitles(Int.MAX_VALUE)
+        assertEquals(3, randomPages.size)
+    }
 }
 
 class MockTextAssetResolver : TextAssetResolver {

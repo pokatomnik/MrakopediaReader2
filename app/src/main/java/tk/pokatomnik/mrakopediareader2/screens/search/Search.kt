@@ -13,10 +13,13 @@ fun Search(
     val (searchText, setSearchText) = remember { mutableStateOf<String?>(null) }
 
     if (viewStep == ViewStep.SEARCH_VIEW) {
-        SearchView(onSearch = {
-            setSearchText(it)
-            setViewStep(ViewStep.SEARCH_RESULTS)
-        })
+        SearchView(
+            onSearch = {
+                setSearchText(it)
+                setViewStep(ViewStep.SEARCH_RESULTS)
+            },
+            onSelectPageTitle = onSelectPage
+        )
     }
 
     if (viewStep == ViewStep.SEARCH_RESULTS && !searchText.isNullOrBlank()) {

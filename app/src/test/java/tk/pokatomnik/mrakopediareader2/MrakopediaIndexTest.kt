@@ -218,13 +218,13 @@ class MockTextAssetResolver : TextAssetResolver {
                 }
             """.trimIndent()
         }
-        if (filePath == "content/0.txt") {
+        if (filePath == "content/0.md") {
             return "STORY_0_CONTENT"
         }
-        if (filePath == "content/1.txt") {
+        if (filePath == "content/1.md") {
             return "STORY_1_CONTENT"
         }
-        if (filePath == "content/2.txt") {
+        if (filePath == "content/2.md") {
             return "STORY_2_CONTENT"
         }
         throw IOException("No such file")

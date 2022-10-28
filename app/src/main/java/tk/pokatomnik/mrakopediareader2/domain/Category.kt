@@ -17,7 +17,7 @@ class Category(
     fun getPageContentByTitle(title: String): String {
         val contentId = items[title]?.contentId ?: return ""
         return try {
-            textContentResolver.resolve("content/$contentId.txt")
+            textContentResolver.resolve("content/$contentId.md")
         } catch (e: Exception) { "" }
     }
 

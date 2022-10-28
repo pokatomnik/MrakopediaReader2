@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.jeziellago.compose.markdowntext.MarkdownText
 import kotlinx.coroutines.launch
 import tk.pokatomnik.mrakopediareader2.services.db.dao.favoritestories.FavoriteStory
 import tk.pokatomnik.mrakopediareader2.services.db.rememberDatabase
@@ -24,6 +25,21 @@ import tk.pokatomnik.mrakopediareader2.services.preferences.page.rememberContent
 import tk.pokatomnik.mrakopediareader2.services.preferences.rememberPreferences
 import tk.pokatomnik.mrakopediareader2.ui.components.KeepScreenOn
 import tk.pokatomnik.mrakopediareader2.ui.components.PageContainer
+
+@Composable
+fun StoryContent(
+    content: String,
+    fontSize: Int,
+) {
+    key(fontSize) {
+        MarkdownText(
+            markdown = content,
+            textAlign = TextAlign.Justify,
+            fontSize = fontSize.sp,
+            disableLinkMovementMethod = true,
+        )
+    }
+}
 
 @Composable
 private fun StoryInternal(
@@ -99,7 +115,9 @@ private fun StoryInternal(
         PageContainer {
             Box(modifier = Modifier.fillMaxSize()) {
                 Row(
-                    modifier = Modifier.align(Alignment.TopEnd).alpha(scrollPositionAlpha.value),
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .alpha(scrollPositionAlpha.value),
                 ) {
                     Text(
                         text = "${100 * scrollState.value / scrollState.maxValue}%",
@@ -113,10 +131,9 @@ private fun StoryInternal(
                         .verticalScroll(scrollState)
                         .clickable(
                             remember { MutableInteractionSource() },
-                            indication = null
-                        ) {
-                            setControlsDisplayed(!controlsDisplayed)
-                        }
+                            indication = null,
+                            onClick = { setControlsDisplayed(!controlsDisplayed) }
+                        )
                 ) {
                     Text(
                         text = selectedPageTitle,
@@ -124,11 +141,7 @@ private fun StoryInternal(
                         textAlign = TextAlign.Center,
                     )
                     Divider(modifier = Modifier.fillMaxWidth())
-                    Text(
-                        textAlign = TextAlign.Justify,
-                        text = content,
-                        fontSize = pageContentSize.value.sp
-                    )
+                    StoryContent(content = content, fontSize = pageContentSize.value)
                     if (seeAlso.isNotEmpty()) {
                         SeeAlso(
                             seeAlso = seeAlso,

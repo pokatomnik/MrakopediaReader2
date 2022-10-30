@@ -72,7 +72,7 @@ fun Stories(
 
     return PageContainer(
         header = { PageTitle(title = "Категория: $selectedCategoryTitle") },
-        headerButton = {
+        priorButton = {
             IconButton(onClick = { updateFavoriteStatus(!isFavorite) }) {
                 Icon(
                     imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,

@@ -122,7 +122,7 @@ fun Stories(
                         )
                     }
                 },
-                header = { PageTitle(title = "Категория: $selectedCategoryTitle") },
+                header = { PageTitle(title = selectedCategoryTitle) },
                 trailingButton = {
                     IconButton(
                         onClick = {

@@ -48,7 +48,7 @@ fun SearchResults(
     }
 
     PageContainer(
-        headerButton = {
+        priorButton = {
             IconButton(onClick = onBackPress) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,

@@ -11,8 +11,9 @@ private const val HEADER_HEIGHT = 48
 
 @Composable
 fun PageContainer(
-    headerButton: (@Composable () -> Unit)? = null,
+    priorButton: (@Composable () -> Unit)? = null,
     header: (@Composable () -> Unit)? = null,
+    trailingButton: (@Composable () -> Unit)? = null,
     body: @Composable () -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
@@ -23,22 +24,27 @@ fun PageContainer(
                     .height(HEADER_HEIGHT.dp)
                     .padding(horizontal = 8.dp),
             ) {
-                if (headerButton != null) {
+                if (priorButton != null) {
                     Column(modifier = Modifier.width(HEADER_HEIGHT.dp).fillMaxHeight()) {
-                        headerButton()
+                        priorButton()
                     }
                 }
                 Column(
                     modifier = Modifier.weight(1f).fillMaxWidth().fillMaxHeight().padding(
-                        end = (if (headerButton == null) 0 else HEADER_HEIGHT).dp,
+                        end = (if (priorButton == null) 0 else HEADER_HEIGHT).dp,
                         bottom = 0.dp,
                         top = 0.dp,
-                        start = 0.dp
+                        start = (if (trailingButton == null) 0 else HEADER_HEIGHT).dp
                     ),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     header()
+                }
+                if (trailingButton != null) {
+                    Column(modifier = Modifier.width(HEADER_HEIGHT.dp).fillMaxHeight()) {
+                        trailingButton()
+                    }
                 }
             }
             Divider(modifier = Modifier.fillMaxWidth())

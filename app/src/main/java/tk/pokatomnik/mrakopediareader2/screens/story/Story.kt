@@ -41,6 +41,10 @@ fun StoryContent(
     }
 }
 
+private fun Int.percentOf(max: Int): Int {
+    return if (max == 0) 0 else 100 * this / max
+}
+
 @Composable
 private fun StoryInternal(
     scrollPosition: Int,
@@ -120,7 +124,7 @@ private fun StoryInternal(
                         .alpha(scrollPositionAlpha.value),
                 ) {
                     Text(
-                        text = "${100 * scrollState.value / scrollState.maxValue}%",
+                        text = "${scrollState.value.percentOf(scrollState.maxValue)}%",
                         textAlign = TextAlign.End
                     )
                 }

@@ -96,17 +96,17 @@ fun Categories(
                 },
                 header = { PageTitle(title = "Категории") },
                 trailingButton = {
-                    IconButton(onClick = {
-                        scope.launch {
-                            if (drawerState.isOpen) drawerState.close() else drawerState.open()
+                    IconButton(
+                        onClick = {
+                            scope.launch { if (drawerState.isOpen) drawerState.close() else drawerState.open() }
+                        },
+                        content = {
+                            Icon(
+                                imageVector = Icons.Filled.Sort,
+                                contentDescription = "Сортировка"
+                            )
                         }
-
-                    }) {
-                        Icon(
-                            imageVector = Icons.Filled.Sort,
-                            contentDescription = "Сортировка"
-                        )
-                    }
+                    )
                 }
             ) {
                 LazyList(

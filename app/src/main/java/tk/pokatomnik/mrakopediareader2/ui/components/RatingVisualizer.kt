@@ -1,7 +1,7 @@
 package tk.pokatomnik.mrakopediareader2.ui.components
 
 val emojiByRating = listOf(
-    "☹",
+    "👎",
     "🙁",
     "😕",
     "🥱",

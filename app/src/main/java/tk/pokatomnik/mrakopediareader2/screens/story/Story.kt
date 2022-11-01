@@ -1,5 +1,6 @@
 package tk.pokatomnik.mrakopediareader2.screens.story
 
+import android.content.Intent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -13,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,6 +55,7 @@ private fun StoryInternal(
     onNavigateToPage: (pageTitle: String) -> Unit,
     onNavigateToCategory: (categoryTitle: String) -> Unit
 ) {
+    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val mrakopediaDatabase = rememberDatabase()
     val favoriteStoriesDAO = mrakopediaDatabase.favoriteStoriesDAO()
@@ -76,6 +79,18 @@ private fun StoryInternal(
                 favoriteStoriesDAO.delete(FavoriteStory(selectedPageTitle))
             }
         }
+    }
+
+    val onSharePress = {
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        val shareLink = resolveContentURL(selectedPageTitle)
+        val shareMessage = "\nЧитать на Мракопедии:\n\n"
+
+        shareIntent.type = "text/plain"
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "MrakopediaReader2")
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage + shareLink)
+
+        context.startActivity(Intent.createChooser(shareIntent, "Выберите"))
     }
 
     val (controlsDisplayed, setControlsDisplayed) = remember { mutableStateOf(false) }
@@ -174,6 +189,7 @@ private fun StoryInternal(
                     minFontSize = pagePreferences.minFontSize,
                     isFavorite = isFavorite,
                     onFavoritePress = onFavoritePress,
+                    onSharePress = onSharePress
                 )
             }
         }

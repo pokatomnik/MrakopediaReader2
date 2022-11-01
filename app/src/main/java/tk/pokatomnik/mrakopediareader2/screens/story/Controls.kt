@@ -5,11 +5,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
@@ -24,8 +22,31 @@ internal fun BoxScope.Controls(
     maxFontSize: Int,
     minFontSize: Int,
     isFavorite: Boolean,
-    onFavoritePress: (isFavorite: Boolean) -> Unit
+    onFavoritePress: (isFavorite: Boolean) -> Unit,
+    onSharePress: () -> Unit,
 ) {
+    Row(
+        modifier = Modifier
+            .padding(
+                start = 16.dp,
+                end = 16.dp,
+                top = 16.dp,
+                bottom = 160.dp
+            )
+            .align(alignment = Alignment.BottomEnd)
+            .alpha(alpha)
+    ) {
+        FloatingActionButton(
+            contentColor = MaterialTheme.colors.onSecondary,
+            modifier = Modifier.padding(horizontal = 8.dp),
+            onClick = onSharePress
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Share,
+                contentDescription = "Поделиться"
+            )
+        }
+    }
     Row(
         modifier = Modifier
             .padding(
@@ -38,6 +59,7 @@ internal fun BoxScope.Controls(
             .alpha(alpha)
     ) {
         FloatingActionButton(
+            contentColor = MaterialTheme.colors.onSecondary,
             modifier = Modifier.padding(horizontal = 8.dp),
             onClick = { onFavoritePress(!isFavorite) }
         ) {
@@ -54,6 +76,7 @@ internal fun BoxScope.Controls(
             .alpha(alpha)
     ) {
         FloatingActionButton(
+            contentColor = MaterialTheme.colors.onSecondary,
             modifier = Modifier.padding(horizontal = 8.dp),
             onClick = {
                 val newSize = pageContentSize.value + 1
@@ -68,6 +91,7 @@ internal fun BoxScope.Controls(
             )
         }
         FloatingActionButton(
+            contentColor = MaterialTheme.colors.onSecondary,
             modifier = Modifier.padding(horizontal = 8.dp),
             onClick = {
                 val newSize = pageContentSize.value - 1

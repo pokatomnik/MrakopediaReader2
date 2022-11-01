@@ -26,6 +26,8 @@ fun Settings() {
         ) {
             ThemeSettingsSection()
             Divider(modifier = Modifier.fillMaxWidth())
+            OpenWithMrakopediaAppSetting()
+            Divider(modifier = Modifier.fillMaxWidth())
             AboutAndFeedbackSection()
         }
     }

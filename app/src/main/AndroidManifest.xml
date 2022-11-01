@@ -20,8 +20,25 @@
             android:theme="@style/Theme.MrakopediaReader2">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="https"
+                    android:host="mrakopedia.net"
+                    android:pathPrefix="/wiki" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="http"
+                    android:host="mrakopedia.net"
+                    android:pathPrefix="/wiki" />
             </intent-filter>
 
             <meta-data

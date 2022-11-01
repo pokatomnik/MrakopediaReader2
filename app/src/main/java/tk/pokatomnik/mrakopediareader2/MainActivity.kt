@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -22,15 +23,28 @@ import tk.pokatomnik.mrakopediareader2.screens.story.Story
 import tk.pokatomnik.mrakopediareader2.services.index.rememberMrakopediaIndex
 import tk.pokatomnik.mrakopediareader2.services.navigation.rememberNavigation
 import tk.pokatomnik.mrakopediareader2.ui.components.BottomNavItem
+import tk.pokatomnik.mrakopediareader2.ui.components.rememberComputedPageTitle
 import tk.pokatomnik.mrakopediareader2.ui.theme.MrakopediaReader2Theme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        intent
         super.onCreate(savedInstanceState)
         setContent {
             val mrakopediaIndex = rememberMrakopediaIndex()
             val navigation = rememberNavigation()
+            val desiredPageTitle = rememberComputedPageTitle(intent.data)
+
+            LaunchedEffect(desiredPageTitle) {
+                if (desiredPageTitle != null) {
+                    navigation.navigateToStory(
+                        mrakopediaIndex.getCategory(mrakopediaIndex.getGeneralCategoryTitle()).name,
+                        desiredPageTitle
+                    )
+                }
+            }
+
             MrakopediaReader2Theme {
                 Scaffold(
                     bottomBar = {

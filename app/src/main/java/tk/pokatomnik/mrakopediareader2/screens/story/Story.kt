@@ -146,6 +146,11 @@ private fun StoryInternal(
                     )
                     Divider(modifier = Modifier.fillMaxWidth())
                     StoryContent(content = content, fontSize = pageContentSize.value)
+                    RatingAndVoted(
+                        rating = pageMeta?.rating ?: 0,
+                        voted = pageMeta?.voted ?: 0,
+                        fontSize = pageContentSize.value,
+                    )
                     if (seeAlso.isNotEmpty()) {
                         SeeAlso(
                             seeAlso = seeAlso,

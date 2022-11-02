@@ -3,15 +3,22 @@ package tk.pokatomnik.mrakopediareader2
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraphBuilder
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable as AccompanistComposable
 import dagger.hilt.android.AndroidEntryPoint
 import tk.pokatomnik.mrakopediareader2.screens.categories.Categories
 import tk.pokatomnik.mrakopediareader2.screens.favorites.Favorites
@@ -26,10 +33,53 @@ import tk.pokatomnik.mrakopediareader2.ui.components.BottomNavItem
 import tk.pokatomnik.mrakopediareader2.ui.components.rememberComputedPageTitle
 import tk.pokatomnik.mrakopediareader2.ui.theme.MrakopediaReader2Theme
 
+@OptIn(ExperimentalAnimationApi::class)
+fun NavGraphBuilder.composable(
+    route: String,
+    main: Boolean = false,
+    content: @Composable (AnimatedVisibilityScope.(NavBackStackEntry) -> Unit)
+) {
+    AccompanistComposable(
+        route = route,
+        enterTransition = {
+            if (main) {
+                slideIntoContainer(
+                    AnimatedContentScope.SlideDirection.Up,
+                    animationSpec = tween(700)
+                )
+            } else {
+                slideIntoContainer(
+                    AnimatedContentScope.SlideDirection.Left,
+                    animationSpec = tween(700)
+                )
+            }
+        },
+        exitTransition = {
+            slideOutOfContainer(
+                AnimatedContentScope.SlideDirection.Left,
+                animationSpec = tween(700)
+            )
+        },
+        popEnterTransition = {
+            slideIntoContainer(
+                AnimatedContentScope.SlideDirection.Right,
+                animationSpec = tween(700)
+            )
+        },
+        popExitTransition = {
+            slideOutOfContainer(
+                AnimatedContentScope.SlideDirection.Right,
+                animationSpec = tween(700)
+            )
+        },
+        content = content,
+    )
+}
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-        intent
         super.onCreate(savedInstanceState)
         setContent {
             val mrakopediaIndex = rememberMrakopediaIndex()
@@ -80,12 +130,12 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colors.background
                     ) {
-                        NavHost(
+                        AnimatedNavHost(
                             navController = navigation.navController,
                             startDestination = navigation.categoriesRoute,
                             modifier = Modifier.padding(innerPadding)
                         ) {
-                            composable(route = navigation.categoriesRoute) {
+                            composable(route = navigation.categoriesRoute, main = true) {
                                 Categories(
                                     onSelectCategoryTitle = { categoryTitle ->
                                         navigation.navigateToStories(categoryTitle)
@@ -137,7 +187,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             }
-                            composable(route = navigation.favoritesRoute) {
+                            composable(route = navigation.favoritesRoute, main = true) {
                                 Favorites(
                                     onStoryClick = { storyTitle ->
                                         navigation.navigateToStory(
@@ -150,7 +200,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             }
-                            composable(route = navigation.historyRoute) {
+                            composable(route = navigation.historyRoute, main = true) {
                                 History(
                                     onSelectPage = { storyTitle ->
                                         navigation.navigateToStory(
@@ -160,7 +210,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             }
-                            composable(route = navigation.settingsRoute) {
+                            composable(route = navigation.settingsRoute, main = true) {
                                 Settings()
                             }
                         }

@@ -1,5 +1,6 @@
 package tk.pokatomnik.mrakopediareader2.services.navigation
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavBackStackEntry
@@ -7,7 +8,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 data class Navigation(
     val navController: NavHostController,
@@ -105,9 +106,10 @@ data class Navigation(
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun rememberNavigation(): Navigation {
-    val navHostController = rememberNavController()
+    val navHostController = rememberAnimatedNavController()
     val serializer = rememberSerializer()
     return Navigation(navHostController, serializer)
 }

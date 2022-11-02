@@ -1,5 +1,6 @@
 package tk.pokatomnik.mrakopediareader2.screens.search
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -53,7 +54,7 @@ fun SearchView(
     }
 
     return Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colors.surface),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier

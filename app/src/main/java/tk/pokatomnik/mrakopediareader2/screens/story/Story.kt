@@ -25,7 +25,6 @@ import tk.pokatomnik.mrakopediareader2.services.db.rememberDatabase
 import tk.pokatomnik.mrakopediareader2.services.index.rememberMrakopediaIndex
 import tk.pokatomnik.mrakopediareader2.services.preferences.page.rememberContentTextSize
 import tk.pokatomnik.mrakopediareader2.services.preferences.rememberPreferences
-import tk.pokatomnik.mrakopediareader2.ui.components.KeepScreenOn
 import tk.pokatomnik.mrakopediareader2.ui.components.PageContainer
 
 @Composable
@@ -130,68 +129,66 @@ private fun StoryInternal(
         setControlsDisplayed(false)
     }
 
-    KeepScreenOn {
-        PageContainer {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Row(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .alpha(scrollPositionAlpha.value),
-                ) {
-                    Text(
-                        text = "${scrollState.value.percentOf(scrollState.maxValue)}%",
-                        textAlign = TextAlign.End
-                    )
-                }
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp)
-                        .verticalScroll(scrollState)
-                        .clickable(
-                            remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = { setControlsDisplayed(!controlsDisplayed) }
-                        )
-                ) {
-                    Text(
-                        text = selectedPageTitle,
-                        style = MaterialTheme.typography.h5,
-                        textAlign = TextAlign.Center,
-                    )
-                    Divider(modifier = Modifier.fillMaxWidth())
-                    StoryContent(content = content, fontSize = pageContentSize.value)
-                    RatingAndVoted(
-                        rating = pageMeta?.rating ?: 0,
-                        voted = pageMeta?.voted ?: 0,
-                        fontSize = pageContentSize.value,
-                    )
-                    if (seeAlso.isNotEmpty()) {
-                        SeeAlso(
-                            seeAlso = seeAlso,
-                            onClick = { onNavigateToPage(it) }
-                        )
-                    }
-                    if (categories.isNotEmpty()) {
-                        Categories(
-                            categories = categories,
-                            onClick = {
-                                onNavigateToCategory(it)
-                            }
-                        )
-                    }
-                    Source(pageTitle = selectedPageTitle)
-                }
-                Controls(
-                    alpha = controlsAlpha.value,
-                    pageContentSize = pageContentSize,
-                    maxFontSize = pagePreferences.maxFontSize,
-                    minFontSize = pagePreferences.minFontSize,
-                    isFavorite = isFavorite,
-                    onFavoritePress = onFavoritePress,
-                    onSharePress = onSharePress
+    PageContainer {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Row(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .alpha(scrollPositionAlpha.value),
+            ) {
+                Text(
+                    text = "${scrollState.value.percentOf(scrollState.maxValue)}%",
+                    textAlign = TextAlign.End
                 )
             }
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+                    .verticalScroll(scrollState)
+                    .clickable(
+                        remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = { setControlsDisplayed(!controlsDisplayed) }
+                    )
+            ) {
+                Text(
+                    text = selectedPageTitle,
+                    style = MaterialTheme.typography.h5,
+                    textAlign = TextAlign.Center,
+                )
+                Divider(modifier = Modifier.fillMaxWidth())
+                StoryContent(content = content, fontSize = pageContentSize.value)
+                RatingAndVoted(
+                    rating = pageMeta?.rating ?: 0,
+                    voted = pageMeta?.voted ?: 0,
+                    fontSize = pageContentSize.value,
+                )
+                if (seeAlso.isNotEmpty()) {
+                    SeeAlso(
+                        seeAlso = seeAlso,
+                        onClick = { onNavigateToPage(it) }
+                    )
+                }
+                if (categories.isNotEmpty()) {
+                    Categories(
+                        categories = categories,
+                        onClick = {
+                            onNavigateToCategory(it)
+                        }
+                    )
+                }
+                Source(pageTitle = selectedPageTitle)
+            }
+            Controls(
+                alpha = controlsAlpha.value,
+                pageContentSize = pageContentSize,
+                maxFontSize = pagePreferences.maxFontSize,
+                minFontSize = pagePreferences.minFontSize,
+                isFavorite = isFavorite,
+                onFavoritePress = onFavoritePress,
+                onSharePress = onSharePress
+            )
         }
     }
 }

@@ -1,6 +1,8 @@
 package tk.pokatomnik.mrakopediareader2
 
+import android.app.Activity
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContentScope
@@ -13,8 +15,10 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -34,9 +38,10 @@ import tk.pokatomnik.mrakopediareader2.ui.components.rememberComputedPageTitle
 import tk.pokatomnik.mrakopediareader2.ui.theme.MrakopediaReader2Theme
 
 @OptIn(ExperimentalAnimationApi::class)
-fun NavGraphBuilder.composable(
+private fun NavGraphBuilder.screen(
     route: String,
     main: Boolean = false,
+    keepScreenOn: Boolean = false,
     content: @Composable (AnimatedVisibilityScope.(NavBackStackEntry) -> Unit)
 ) {
     AccompanistComposable(
@@ -72,7 +77,20 @@ fun NavGraphBuilder.composable(
                 animationSpec = tween(700)
             )
         },
-        content = content,
+        content = { navBackStackEntry ->
+            val activity = LocalContext.current as? Activity
+            DisposableEffect(Unit) {
+                if (keepScreenOn) {
+                    activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                }
+                onDispose {
+                    if (keepScreenOn) {
+                        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                    }
+                }
+            }
+            content(navBackStackEntry)
+        },
     )
 }
 
@@ -135,7 +153,7 @@ class MainActivity : ComponentActivity() {
                             startDestination = navigation.categoriesRoute,
                             modifier = Modifier.padding(innerPadding)
                         ) {
-                            composable(route = navigation.categoriesRoute, main = true) {
+                            screen(route = navigation.categoriesRoute, main = true) {
                                 Categories(
                                     onSelectCategoryTitle = { categoryTitle ->
                                         navigation.navigateToStories(categoryTitle)
@@ -143,7 +161,7 @@ class MainActivity : ComponentActivity() {
                                     onPressSearch = { navigation.navigateToSearch() }
                                 )
                             }
-                            composable(route = navigation.searchRoute) {
+                            screen(route = navigation.searchRoute) {
                                 Search(
                                     onSelectPage = { storyTitle ->
                                         navigation.navigateToStory(
@@ -156,7 +174,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             }
-                            composable(route = navigation.storiesRoute) {
+                            screen(route = navigation.storiesRoute) {
                                 val categoryTitle = navigation.getCategoryTitle(it)
                                     ?: mrakopediaIndex.getGeneralCategoryTitle()
                                 Stories(
@@ -169,7 +187,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             }
-                            composable(route = navigation.storyRoute) {
+                            screen(route = navigation.storyRoute, keepScreenOn = true) {
                                 val categoryTitle = navigation.getCategoryTitle(it)
                                     ?: mrakopediaIndex.getGeneralCategoryTitle()
                                 val pageTitle = navigation.getStoryTitle(it) ?: ""
@@ -187,7 +205,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             }
-                            composable(route = navigation.favoritesRoute, main = true) {
+                            screen(route = navigation.favoritesRoute, main = true) {
                                 Favorites(
                                     onStoryClick = { storyTitle ->
                                         navigation.navigateToStory(
@@ -200,7 +218,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             }
-                            composable(route = navigation.historyRoute, main = true) {
+                            screen(route = navigation.historyRoute, main = true) {
                                 History(
                                     onSelectPage = { storyTitle ->
                                         navigation.navigateToStory(
@@ -210,7 +228,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             }
-                            composable(route = navigation.settingsRoute, main = true) {
+                            screen(route = navigation.settingsRoute, main = true) {
                                 Settings()
                             }
                         }

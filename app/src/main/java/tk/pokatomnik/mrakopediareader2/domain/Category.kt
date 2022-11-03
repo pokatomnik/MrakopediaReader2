@@ -1,7 +1,6 @@
 package tk.pokatomnik.mrakopediareader2.domain
 
 import tk.pokatomnik.mrakopediareader2.services.textassetresolver.TextAssetResolver
-import tk.pokatomnik.mrakopediareader2.ui.components.ratingToEmoji
 
 class Category(
     val name: String,
@@ -34,7 +33,7 @@ class Category(
     }
 
     fun formatDescription(): String {
-        return "$size историй. ${ratingToEmoji(avgRating)} $avgRating%/$avgVoted человек"
+        return "$size историй. $avgRating%/$avgVoted человек"
     }
 
     fun getPageMetaByTitle(title: String): PageMeta? {

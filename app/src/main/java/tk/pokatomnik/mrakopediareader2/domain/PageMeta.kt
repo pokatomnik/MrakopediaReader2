@@ -13,6 +13,6 @@ data class PageMeta(
 ) {
     fun formatDescription(): String {
         val readingTime = ceil(charactersInPage.toFloat() / 1500).toInt()
-        return "⌚$readingTime мин. ${rating ?: 0}%/${voted ?: 0} человек"
+        return "$readingTime мин. ${rating ?: 0}%/${voted ?: 0} человек"
     }
 }

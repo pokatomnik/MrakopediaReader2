@@ -7,7 +7,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 
 private const val HEADER_HEIGHT = 48
 
@@ -18,16 +20,18 @@ fun PageContainer(
     trailingButton: (@Composable () -> Unit)? = null,
     body: @Composable () -> Unit,
 ) {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(
-            color = MaterialTheme.colors.surface
-        )) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colors.surface)
+    ) {
         if (header != null) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(HEADER_HEIGHT.dp)
+                    .background(color = MaterialTheme.colors.surface)
+                    .zIndex(1f)
                     .padding(horizontal = 8.dp),
             ) {
                 if (priorButton != null) {
@@ -61,7 +65,12 @@ fun PageContainer(
                     }
                 }
             }
-            Divider(modifier = Modifier.fillMaxWidth())
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(10.dp)
+                    .zIndex(0f)
+            )
         }
         Column(modifier = Modifier.fillMaxSize()) {
             body()

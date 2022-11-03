@@ -10,7 +10,7 @@ import androidx.compose.ui.text.style.TextOverflow
 internal fun PageTitle(title: String) {
     Text(
         overflow = TextOverflow.Ellipsis,
-        style = MaterialTheme.typography.h5,
+        style = MaterialTheme.typography.h6,
         textAlign = TextAlign.Center,
         maxLines = 1,
         text = title

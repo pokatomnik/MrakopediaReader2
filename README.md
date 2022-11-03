@@ -1,3 +1,5 @@
+[![Build](https://github.com/pokatomnik/MrakopediaReader2/actions/workflows/android.yml/badge.svg)](https://github.com/pokatomnik/MrakopediaReader2/actions/workflows/android.yml)
+
 # Mrakopedia Reader v2
 
 The good old [Mrakopedia Reader](https://github.com/pokatomnik/mrakopedia-reader) is archived right now, because Its API is inaccessible.

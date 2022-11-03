@@ -3,10 +3,12 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
+import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import tk.pokatomnik.mrakopediareader2.services.preferences.global.LocalThemeIdentifier
 import tk.pokatomnik.mrakopediareader2.services.preferences.global.ThemeIdentifier
 import tk.pokatomnik.mrakopediareader2.services.preferences.global.rememberThemeIdentifier
@@ -30,6 +32,7 @@ private val LightColorPalette = lightColors(
 private fun MrakopediaReader2ThemeInternal(
     content: @Composable () -> Unit
 ) {
+    val systemUiController = rememberSystemUiController()
     val themeIdentifierState = rememberThemeIdentifier()
     val darkTheme = isSystemInDarkTheme()
     val darkThemeEnabledByPreferences = when (themeIdentifierState.value) {
@@ -43,6 +46,8 @@ private fun MrakopediaReader2ThemeInternal(
     } else {
         LightColorPalette
     }
+
+    systemUiController.setSystemBarsColor(colors.primarySurface)
 
     MaterialTheme(
         colors = colors,

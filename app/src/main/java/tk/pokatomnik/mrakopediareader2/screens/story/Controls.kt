@@ -37,7 +37,7 @@ internal fun BoxScope.Controls(
             .alpha(alpha)
     ) {
         FloatingActionButton(
-            contentColor = MaterialTheme.colors.onSecondary,
+            contentColor = MaterialTheme.colors.onPrimary,
             modifier = Modifier.padding(horizontal = 8.dp),
             onClick = onSharePress
         ) {
@@ -59,7 +59,7 @@ internal fun BoxScope.Controls(
             .alpha(alpha)
     ) {
         FloatingActionButton(
-            contentColor = MaterialTheme.colors.onSecondary,
+            contentColor = MaterialTheme.colors.onPrimary,
             modifier = Modifier.padding(horizontal = 8.dp),
             onClick = { onFavoritePress(!isFavorite) }
         ) {
@@ -76,7 +76,7 @@ internal fun BoxScope.Controls(
             .alpha(alpha)
     ) {
         FloatingActionButton(
-            contentColor = MaterialTheme.colors.onSecondary,
+            contentColor = MaterialTheme.colors.onPrimary,
             modifier = Modifier.padding(horizontal = 8.dp),
             onClick = {
                 val newSize = pageContentSize.value + 1
@@ -91,7 +91,7 @@ internal fun BoxScope.Controls(
             )
         }
         FloatingActionButton(
-            contentColor = MaterialTheme.colors.onSecondary,
+            contentColor = MaterialTheme.colors.onPrimary,
             modifier = Modifier.padding(horizontal = 8.dp),
             onClick = {
                 val newSize = pageContentSize.value - 1

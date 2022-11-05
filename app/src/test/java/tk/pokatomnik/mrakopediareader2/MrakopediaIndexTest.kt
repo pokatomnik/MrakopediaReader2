@@ -4,6 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import tk.pokatomnik.mrakopediareader2.domain.PageMeta
 import tk.pokatomnik.mrakopediareader2.domain.Category
+import tk.pokatomnik.mrakopediareader2.domain.ImageInfo
 import tk.pokatomnik.mrakopediareader2.services.index.MrakopediaIndex
 import tk.pokatomnik.mrakopediareader2.services.textassetresolver.TextAssetResolver
 import java.io.IOException
@@ -14,7 +15,6 @@ class MrakopediaIndexTest {
         val parsed = MrakopediaIndex(MockTextAssetResolver())
 
         assertEquals(
-            parsed.getCategory("category0").pages,
             listOf(
                 PageMeta(
                     "title0",
@@ -23,7 +23,8 @@ class MrakopediaIndexTest {
                     100,
                     "0",
                     setOf("category0", "category1"),
-                    setOf("foo", "bar")
+                    setOf("foo", "bar"),
+                    listOf(),
                 ),
                 PageMeta(
                     "title1",
@@ -32,7 +33,21 @@ class MrakopediaIndexTest {
                     200,
                     "1",
                     setOf(),
-                    setOf()
+                    setOf(),
+                    listOf(
+                        ImageInfo(
+                            "/path/to/image/1.jpg",
+                            "First Image"
+                        ),
+                        ImageInfo(
+                            "/path/to/image/2.jpg",
+                            "Second Image"
+                        ),
+                        ImageInfo(
+                            "/path/to/image/3.jpg",
+                            null
+                        )
+                    )
                 ),
                 PageMeta(
                     "title2",
@@ -41,9 +56,11 @@ class MrakopediaIndexTest {
                     300,
                     "2",
                     setOf(),
-                    setOf()
+                    setOf(),
+                    listOf()
                 )
-            )
+            ),
+            parsed.getCategory("category0").pages,
         )
         assertEquals(
             parsed.getCategory("category1").pages,
@@ -55,7 +72,8 @@ class MrakopediaIndexTest {
                     100,
                     "0",
                     setOf("category0", "category1"),
-                    setOf("foo", "bar")
+                    setOf("foo", "bar"),
+                    listOf()
                 )
             )
         )
@@ -90,7 +108,8 @@ class MrakopediaIndexTest {
                 300,
                 "2",
                 setOf(),
-                setOf()
+                setOf(),
+                listOf(),
             )
         )
     }
@@ -177,44 +196,82 @@ class MockTextAssetResolver : TextAssetResolver {
         if (filePath == "content/index.json") {
             return """
                 {
-                    "mrakopediaIndex": {
-                        "category0": [{
-                            "title": "title0",
-                            "rating": 99,
-                            "voted": 99,
-                            "charactersInPage": 100,
-                            "contentId": "0",
-                            "categories": ["category0", "category1"],
-                            "seeAlso": ["foo", "bar"]
-                        }, {
-                            "title": "title1",
-                            "charactersInPage": 200,
-                            "contentId": "1",
-                            "categories": [],
-                            "seeAlso": []
-                        }, {
-                            "title": "title2",
-                            "rating": 0,
-                            "voted": 0,
-                            "charactersInPage": 300,
-                            "contentId": "2",
-                            "categories": [],
-                            "seeAlso": []
-                        }],
-                        "category1": [{
-                            "title": "title0",
-                            "rating": 50,
-                            "voted": 50,
-                            "charactersInPage": 100,
-                            "contentId": "0",
-                            "categories": ["category0", "category1"],
-                            "seeAlso": ["foo", "bar"]
-                        }]
-                    },
-                    "storiesOfMonth": {
-                        "goodStories": ["title0"],
-                        "storiesOfMonth": ["title1"] 
-                    }
+                  "mrakopediaIndex": {
+                    "category0": [
+                      {
+                        "title": "title0",
+                        "rating": 99,
+                        "voted": 99,
+                        "charactersInPage": 100,
+                        "contentId": "0",
+                        "categories": [
+                          "category0",
+                          "category1"
+                        ],
+                        "seeAlso": [
+                          "foo",
+                          "bar"
+                        ],
+                        "images": []
+                      },
+                      {
+                        "title": "title1",
+                        "charactersInPage": 200,
+                        "contentId": "1",
+                        "categories": [],
+                        "seeAlso": [],
+                        "images": [
+                          {
+                            "imgPath": "/path/to/image/1.jpg",
+                            "imgCaption": "First Image"
+                          },
+                          {
+                            "imgPath": "/path/to/image/2.jpg",
+                            "imgCaption": "Second Image"
+                          },
+                          {
+                            "imgPath": "/path/to/image/3.jpg"
+                          }
+                        ]
+                      },
+                      {
+                        "title": "title2",
+                        "rating": 0,
+                        "voted": 0,
+                        "charactersInPage": 300,
+                        "contentId": "2",
+                        "categories": [],
+                        "seeAlso": [],
+                        "images": []
+                      }
+                    ],
+                    "category1": [
+                      {
+                        "title": "title0",
+                        "rating": 50,
+                        "voted": 50,
+                        "charactersInPage": 100,
+                        "contentId": "0",
+                        "categories": [
+                          "category0",
+                          "category1"
+                        ],
+                        "seeAlso": [
+                          "foo",
+                          "bar"
+                        ],
+                        "images": []
+                      }
+                    ]
+                  },
+                  "storiesOfMonth": {
+                    "goodStories": [
+                      "title0"
+                    ],
+                    "storiesOfMonth": [
+                      "title1"
+                    ]
+                  }
                 }
             """.trimIndent()
         }

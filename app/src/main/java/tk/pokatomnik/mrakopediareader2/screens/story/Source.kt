@@ -13,12 +13,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import tk.pokatomnik.mrakopediareader2.services.readonlyparams.rememberReadonlyParameters
 
 @Composable
 fun Source(pageTitle: String) {
+    val readonlyParameters = rememberReadonlyParameters()
     val context = LocalContext.current
     val openSource = {
-        val url = resolveContentURL(pageTitle)
+        val url = resolveContentURL(readonlyParameters.originURL, pageTitle)
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         context.startActivity(intent)
     }

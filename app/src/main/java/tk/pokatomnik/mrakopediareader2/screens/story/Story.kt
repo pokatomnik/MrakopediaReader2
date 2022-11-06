@@ -1,51 +1,33 @@
 package tk.pokatomnik.mrakopediareader2.screens.story
 
-import android.content.Intent
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.material.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import dev.jeziellago.compose.markdowntext.MarkdownText
+import coil.compose.AsyncImage
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
 import kotlinx.coroutines.launch
-import tk.pokatomnik.mrakopediareader2.services.db.dao.favoritestories.FavoriteStory
-import tk.pokatomnik.mrakopediareader2.services.db.rememberDatabase
+import tk.pokatomnik.mrakopediareader2.R
 import tk.pokatomnik.mrakopediareader2.services.index.rememberMrakopediaIndex
 import tk.pokatomnik.mrakopediareader2.services.preferences.page.rememberContentTextSize
 import tk.pokatomnik.mrakopediareader2.services.preferences.rememberPreferences
+import tk.pokatomnik.mrakopediareader2.services.readonlyparams.rememberReadonlyParameters
+import tk.pokatomnik.mrakopediareader2.ui.components.BottomSheet
 import tk.pokatomnik.mrakopediareader2.ui.components.PageContainer
 
-@Composable
-fun StoryContent(
-    content: String,
-    fontSize: Int,
-) {
-    key(fontSize) {
-        MarkdownText(
-            markdown = content,
-            textAlign = TextAlign.Justify,
-            fontSize = fontSize.sp,
-            disableLinkMovementMethod = true,
-        )
-    }
-}
-
-private fun Int.percentOf(max: Int): Int {
-    return if (max == 0) 0 else 100 * this / max
-}
-
+@OptIn(ExperimentalMaterialApi::class, ExperimentalPagerApi::class)
 @Composable
 private fun StoryInternal(
     scrollPosition: Int,
@@ -54,143 +36,128 @@ private fun StoryInternal(
     onNavigateToPage: (pageTitle: String) -> Unit,
     onNavigateToCategory: (categoryTitle: String) -> Unit
 ) {
-    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val mrakopediaDatabase = rememberDatabase()
-    val favoriteStoriesDAO = mrakopediaDatabase.favoriteStoriesDAO()
-    val historyDAO = mrakopediaDatabase.historyDAO()
     val pagePreferences = rememberPreferences().pagePreferences
     val pageContentSize = rememberContentTextSize()
+
+    val readonlyParameters = rememberReadonlyParameters()
     val category = rememberMrakopediaIndex()
         .getCategory(selectedCategoryTitle)
-
-    val (isFavorite, setIsFavorite) = remember { mutableStateOf(false) }
-    LaunchedEffect(selectedPageTitle) {
-        val isCurrentFavorite = favoriteStoriesDAO.has(selectedPageTitle) != null
-        setIsFavorite(isCurrentFavorite)
-    }
-    val onFavoritePress: (isFavorite: Boolean) -> Unit = {
-        setIsFavorite(it)
-        coroutineScope.launch {
-            if (it) {
-                favoriteStoriesDAO.add(FavoriteStory(selectedPageTitle))
-            } else {
-                favoriteStoriesDAO.delete(FavoriteStory(selectedPageTitle))
-            }
-        }
-    }
-
-    val onSharePress = {
-        val shareIntent = Intent(Intent.ACTION_SEND)
-        val shareLink = resolveContentURL(selectedPageTitle)
-        val shareMessage = "\nЧитать на Мракопедии:\n\n"
-
-        shareIntent.type = "text/plain"
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "MrakopediaReader2")
-        shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage + shareLink)
-
-        context.startActivity(Intent.createChooser(shareIntent, "Выберите"))
-    }
-
-    val (controlsDisplayed, setControlsDisplayed) = remember { mutableStateOf(false) }
-    val controlsAlpha = animateFloatAsState(
-        targetValue = if (controlsDisplayed) 1f else 0f
-    )
-
-    val content = remember(selectedPageTitle) { category.getPageContentByTitle(selectedPageTitle) }
     val pageMeta = category.getPageMetaByTitle(selectedPageTitle)
+    val content = remember(selectedPageTitle) { category.getPageContentByTitle(selectedPageTitle) }
     val seeAlso = pageMeta?.seeAlso ?: setOf()
     val categories = pageMeta?.categories ?: setOf()
+    val images = (pageMeta?.images ?: listOf()).toList()
 
-    val scrollState = rememberScrollState()
+    val favoriteState = rememberStoryFavorite(selectedPageTitle = selectedPageTitle)
 
-    val scrollPositionAlpha = animateFloatAsState(
-        targetValue = if (scrollState.isScrollInProgress) 0.7f else 0f
+    val onSharePress = rememberShare(selectedPageTitle)
+
+    val (controlsDisplayed, setControlsDisplayed) = remember { mutableStateOf(false) }
+
+    val scrollState = rememberStoryScrollState(
+        scrollPosition = scrollPosition,
+        selectedPageTitle = selectedPageTitle
     )
-
-    LaunchedEffect(scrollPosition) {
-        scrollState.animateScrollTo(scrollPosition)
-    }
-
-    if (scrollState.isScrollInProgress) {
-        DisposableEffect(Unit) {
-            onDispose {
-                coroutineScope.launch {
-                    historyDAO.setScrollPosition(
-                        selectedPageTitle,
-                        scrollState.value
-                    )
-                }
-            }
-        }
-    }
 
     if (scrollState.isScrollInProgress && controlsDisplayed) {
         setControlsDisplayed(false)
     }
+    
+    val drawerState = rememberBottomDrawerState(initialValue = BottomDrawerValue.Closed)
 
-    PageContainer {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Row(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .alpha(scrollPositionAlpha.value),
-            ) {
-                Text(
-                    text = "${scrollState.value.percentOf(scrollState.maxValue)}%",
-                    textAlign = TextAlign.End
-                )
-            }
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp)
-                    .verticalScroll(scrollState)
-                    .clickable(
-                        remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = { setControlsDisplayed(!controlsDisplayed) }
-                    )
-            ) {
-                Text(
-                    text = selectedPageTitle,
-                    style = MaterialTheme.typography.h5,
-                    textAlign = TextAlign.Center,
-                )
-                Divider(modifier = Modifier.fillMaxWidth())
-                StoryContent(content = content, fontSize = pageContentSize.value)
-                RatingAndVoted(
-                    rating = pageMeta?.rating ?: 0,
-                    voted = pageMeta?.voted ?: 0,
-                    fontSize = pageContentSize.value,
-                )
-                if (seeAlso.isNotEmpty()) {
-                    SeeAlso(
-                        seeAlso = seeAlso,
-                        onClick = { onNavigateToPage(it) }
-                    )
-                }
-                if (categories.isNotEmpty()) {
-                    Categories(
-                        categories = categories,
-                        onClick = {
-                            onNavigateToCategory(it)
-                        }
-                    )
-                }
-                Source(pageTitle = selectedPageTitle)
-            }
-            Controls(
-                alpha = controlsAlpha.value,
-                pageContentSize = pageContentSize,
-                maxFontSize = pagePreferences.maxFontSize,
-                minFontSize = pagePreferences.minFontSize,
-                isFavorite = isFavorite,
-                onFavoritePress = onFavoritePress,
-                onSharePress = onSharePress
-            )
-        }
+    val onShowGalleryPress: () -> Unit = {
+        coroutineScope.launch { drawerState.open() }
     }
+
+    BottomSheet(
+        height = 500,
+        drawerState = drawerState,
+        drawerContent = {
+            HorizontalPager(
+                count = images.size,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                val currentImage = images[it]
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(500.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Text(
+                        text = currentImage.imgCaption ?: "Без названия",
+                        textAlign = TextAlign.Center
+                    )
+                    AsyncImage(
+                        modifier = Modifier.fillMaxSize(),
+                        model = "${readonlyParameters.originURL}/${currentImage.imgPath}",
+                        contentScale = ContentScale.FillHeight,
+                        contentDescription = currentImage.imgCaption,
+                        placeholder = painterResource(id = R.drawable.spinner),
+                        error = painterResource(id = R.drawable.broken)
+                    )
+                }
+            }
+        },
+        content = {
+            PageContainer {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    ScrollPositionText(scrollState)
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp)
+                            .verticalScroll(scrollState)
+                            .clickable(
+                                remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = { setControlsDisplayed(!controlsDisplayed) }
+                            )
+                    ) {
+                        Text(
+                            text = selectedPageTitle,
+                            style = MaterialTheme.typography.h5,
+                            textAlign = TextAlign.Center,
+                        )
+                        Divider(modifier = Modifier.fillMaxWidth())
+                        StoryContent(content = content, fontSize = pageContentSize.value)
+                        RatingAndVoted(
+                            rating = pageMeta?.rating ?: 0,
+                            voted = pageMeta?.voted ?: 0,
+                            fontSize = pageContentSize.value,
+                        )
+                        if (seeAlso.isNotEmpty()) {
+                            SeeAlso(
+                                seeAlso = seeAlso,
+                                onClick = { onNavigateToPage(it) }
+                            )
+                        }
+                        if (categories.isNotEmpty()) {
+                            Categories(
+                                categories = categories,
+                                onClick = {
+                                    onNavigateToCategory(it)
+                                }
+                            )
+                        }
+                        Source(pageTitle = selectedPageTitle)
+                    }
+                    Controls(
+                        visible = controlsDisplayed,
+                        pageContentSize = pageContentSize,
+                        maxFontSize = pagePreferences.maxFontSize,
+                        minFontSize = pagePreferences.minFontSize,
+                        isFavorite = favoriteState.state.value,
+                        onFavoritePress = favoriteState.onFavoritePress,
+                        onSharePress = onSharePress,
+                        onShowGalleryPress = if (images.isEmpty()) null else onShowGalleryPress
+                    )
+                }
+            }
+        }
+    )
 }
 
 @Composable

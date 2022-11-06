@@ -11,10 +11,8 @@ private val replacements = mapOf(
     "%21" to "!",
 )
 
-private const val originURL = "https://mrakopedia.net"
-
-fun resolveContentURL(pageTitle: String): String {
-    val rawUrl = "$originURL/wiki/${URLEncoder.encode(pageTitle.replace(" ", "_"), "utf-8")}"
+fun resolveContentURL(origin: String, pageTitle: String): String {
+    val rawUrl = "$origin/wiki/${URLEncoder.encode(pageTitle.replace(" ", "_"), "utf-8")}"
     return replacements.entries.fold(rawUrl) { acc, (from, to) ->
         acc.replace(from, to)
     }

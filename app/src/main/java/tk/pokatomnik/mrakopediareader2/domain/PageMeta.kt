@@ -8,8 +8,9 @@ data class PageMeta(
     val voted: Int?,
     val charactersInPage: Int,
     val contentId: String,
-    val categories: Set<String>,
-    val seeAlso: Set<String>,
+    val categories: Collection<String>,
+    val seeAlso: Collection<String>,
+    val images: Collection<ImageInfo>
 ) {
     fun formatDescription(): String {
         val readingTime = ceil(charactersInPage.toFloat() / 1500).toInt()

@@ -1,5 +1,6 @@
 package tk.pokatomnik.mrakopediareader2.screens.story
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -8,8 +9,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -17,14 +17,29 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 internal fun BoxScope.Controls(
-    alpha: Float,
+    visible: Boolean,
     pageContentSize: MutableState<Int>,
     maxFontSize: Int,
     minFontSize: Int,
     isFavorite: Boolean,
     onFavoritePress: (isFavorite: Boolean) -> Unit,
     onSharePress: () -> Unit,
+    onShowGalleryPress: (() -> Unit)?,
 ) {
+    val (renderControls, setRenderControls) = remember { mutableStateOf(visible) }
+    val controlsAlpha = animateFloatAsState(
+        targetValue = if (visible) 1f else 0f,
+        finishedListener = {
+            if (it.toInt() == 0) { setRenderControls(false) }
+        }
+    )
+
+    LaunchedEffect(visible) {
+        if (visible) setRenderControls(true)
+    }
+
+    if (!renderControls) return
+
     Row(
         modifier = Modifier
             .padding(
@@ -34,12 +49,12 @@ internal fun BoxScope.Controls(
                 bottom = 160.dp
             )
             .align(alignment = Alignment.BottomEnd)
-            .alpha(alpha)
+            .alpha(controlsAlpha.value)
     ) {
         FloatingActionButton(
             contentColor = MaterialTheme.colors.onPrimary,
             modifier = Modifier.padding(horizontal = 8.dp),
-            onClick = onSharePress
+            onClick = onSharePress,
         ) {
             Icon(
                 imageVector = Icons.Filled.Share,
@@ -56,8 +71,20 @@ internal fun BoxScope.Controls(
                 bottom = 88.dp
             )
             .align(alignment = Alignment.BottomEnd)
-            .alpha(alpha)
+            .alpha(controlsAlpha.value)
     ) {
+        if (onShowGalleryPress != null) {
+            FloatingActionButton(
+                contentColor = MaterialTheme.colors.onPrimary,
+                modifier = Modifier.padding(horizontal = 8.dp),
+                onClick = onShowGalleryPress
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Collections,
+                    contentDescription = "Галерея"
+                )
+            }
+        }
         FloatingActionButton(
             contentColor = MaterialTheme.colors.onPrimary,
             modifier = Modifier.padding(horizontal = 8.dp),
@@ -73,7 +100,7 @@ internal fun BoxScope.Controls(
         modifier = Modifier
             .padding(all = 16.dp)
             .align(alignment = Alignment.BottomEnd)
-            .alpha(alpha)
+            .alpha(controlsAlpha.value)
     ) {
         FloatingActionButton(
             contentColor = MaterialTheme.colors.onPrimary,

@@ -23,10 +23,9 @@ import tk.pokatomnik.mrakopediareader2.R
 import tk.pokatomnik.mrakopediareader2.services.index.rememberMrakopediaIndex
 import tk.pokatomnik.mrakopediareader2.services.preferences.page.rememberContentTextSize
 import tk.pokatomnik.mrakopediareader2.services.preferences.rememberPreferences
+import tk.pokatomnik.mrakopediareader2.services.readonlyparams.rememberReadonlyParameters
 import tk.pokatomnik.mrakopediareader2.ui.components.BottomSheet
 import tk.pokatomnik.mrakopediareader2.ui.components.PageContainer
-
-const val MRAKOPEDIA_ORIGIN = "https://mrkpd.ga"
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalPagerApi::class)
 @Composable
@@ -41,6 +40,7 @@ private fun StoryInternal(
     val pagePreferences = rememberPreferences().pagePreferences
     val pageContentSize = rememberContentTextSize()
 
+    val readonlyParameters = rememberReadonlyParameters()
     val category = rememberMrakopediaIndex()
         .getCategory(selectedCategoryTitle)
     val pageMeta = category.getPageMetaByTitle(selectedPageTitle)
@@ -80,7 +80,9 @@ private fun StoryInternal(
             ) {
                 val currentImage = images[it]
                 Column(
-                    modifier = Modifier.fillMaxWidth().height(500.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(500.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                 ) {
@@ -90,7 +92,7 @@ private fun StoryInternal(
                     )
                     AsyncImage(
                         modifier = Modifier.fillMaxSize(),
-                        model = "$MRAKOPEDIA_ORIGIN/${currentImage.imgPath}",
+                        model = "${readonlyParameters.originURL}/${currentImage.imgPath}",
                         contentScale = ContentScale.FillHeight,
                         contentDescription = currentImage.imgCaption,
                         placeholder = painterResource(id = R.drawable.spinner),

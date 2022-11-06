@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BottomSheet(
-    maxHeight: Float = 0.5f,
+    height: Int? = null,
     drawerState: BottomDrawerState,
     content: @Composable () -> Unit,
     drawerContent: @Composable () -> Unit,
@@ -25,7 +25,7 @@ fun BottomSheet(
         drawerState = drawerState,
         drawerBackgroundColor = Color.Transparent,
         drawerContent = {
-            BottomDrawerSurface(maxHeight = maxHeight, content = drawerContent)
+            BottomDrawerSurface(height = height, content = drawerContent)
         },
         content = content
     )
@@ -33,14 +33,17 @@ fun BottomSheet(
 
 @Composable
 private fun BottomDrawerSurface(
-    maxHeight: Float,
+    height: Int?,
     content: @Composable () -> Unit
 ) {
     Surface(
         color = MaterialTheme.colors.background,
         shape = RoundedCornerShape(16.dp, 16.dp, 0.dp, 0.dp)
     ) {
-        Column(modifier = Modifier.fillMaxWidth().fillMaxHeight(maxHeight)) {
+        var wrapperModifier = Modifier.fillMaxWidth()
+        wrapperModifier =
+            (if (height != null) wrapperModifier.height(height.dp) else wrapperModifier.fillMaxHeight(0.5f))
+        Column(modifier = wrapperModifier) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

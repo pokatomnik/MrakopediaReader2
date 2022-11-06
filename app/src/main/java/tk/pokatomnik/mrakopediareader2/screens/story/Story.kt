@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -70,21 +71,30 @@ private fun StoryInternal(
     }
 
     BottomSheet(
-        maxHeight = 1f,
+        height = 500,
         drawerState = drawerState,
         drawerContent = {
-            Column(modifier = Modifier.fillMaxSize()) {
-                HorizontalPager(
-                    count = images.size,
-                    modifier = Modifier.fillMaxSize()
+            HorizontalPager(
+                count = images.size,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                val currentImage = images[it]
+                Column(
+                    modifier = Modifier.fillMaxWidth().height(500.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
                 ) {
-                    val currentImage = images[it]
+                    Text(
+                        text = currentImage.imgCaption ?: "Без названия",
+                        textAlign = TextAlign.Center
+                    )
                     AsyncImage(
+                        modifier = Modifier.fillMaxSize(),
                         model = "$MRAKOPEDIA_ORIGIN/${currentImage.imgPath}",
-                        contentScale = ContentScale.Inside,
+                        contentScale = ContentScale.FillHeight,
                         contentDescription = currentImage.imgCaption,
-                        placeholder = painterResource(id = R.drawable.placeholder),
-                        error = painterResource(id = R.drawable.placeholder)
+                        placeholder = painterResource(id = R.drawable.spinner),
+                        error = painterResource(id = R.drawable.broken)
                     )
                 }
             }

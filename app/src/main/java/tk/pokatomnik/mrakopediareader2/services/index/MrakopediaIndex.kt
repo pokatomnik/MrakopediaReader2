@@ -2,6 +2,7 @@ package tk.pokatomnik.mrakopediareader2.services.index
 
 import kotlinx.coroutines.*
 import tk.pokatomnik.mrakopediareader2.domain.Category
+import tk.pokatomnik.mrakopediareader2.domain.Index
 import tk.pokatomnik.mrakopediareader2.domain.PageMeta
 import tk.pokatomnik.mrakopediareader2.services.textassetresolver.TextAssetResolver
 import java.lang.Integer.min
@@ -13,15 +14,16 @@ class MrakopediaIndex(
 ) {
     private val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
-    private val index by lazy {
+    lateinit var index: Index
+
+    val uniquePagesTotalComputed: Int
+        get() = index.mrakopediaIndex[GENERAL_CATEGORY_TITLE]?.size ?: 0
+
+    fun prepare() {
         val jsonString = textContentResolver.resolve("content/index.json")
-        resolveIndex(GENERAL_CATEGORY_TITLE, jsonString) { title, metaMap ->
+        index = resolveIndex(GENERAL_CATEGORY_TITLE, jsonString) { title, metaMap ->
             Category(title, metaMap, textContentResolver)
         }
-    }
-
-    val uniquePagesTotalComputed by lazy {
-        index.mrakopediaIndex[GENERAL_CATEGORY_TITLE]?.size ?: 0
     }
 
     fun getCategory(categoryTitle: String): Category {

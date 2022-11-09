@@ -30,7 +30,14 @@ class GlobalPreferences(private val sharedPreferences: SharedPreferences) {
                 .apply()
         }
 
+    var savedPath: String? = sharedPreferences.getString(SAVED_NAVIGATION_PATH, null)
+        set(value) {
+            field = value
+            sharedPreferences.edit().putString(SAVED_NAVIGATION_PATH, value).apply()
+        }
+
     companion object {
         const val THEME_IDENTIFIER_KEY = "theme:identifier"
+        const val SAVED_NAVIGATION_PATH  = "navigation:saved_path"
     }
 }

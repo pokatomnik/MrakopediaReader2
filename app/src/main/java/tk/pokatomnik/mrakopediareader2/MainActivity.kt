@@ -43,7 +43,9 @@ class MainActivity : ComponentActivity() {
                     val desiredPageTitle = rememberComputedPageTitle(intent.data)
 
                     LaunchedEffect(desiredPageTitle) {
-                        if (desiredPageTitle != null) {
+                        if (desiredPageTitle == null) {
+                            navigation.navigateToSaved()
+                        } else {
                             navigation.navigateToStory(
                                 mrakopediaIndex.getCategory(mrakopediaIndex.getGeneralCategoryTitle()).name,
                                 desiredPageTitle

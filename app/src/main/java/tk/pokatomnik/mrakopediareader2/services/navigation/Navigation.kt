@@ -9,14 +9,30 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import tk.pokatomnik.mrakopediareader2.services.preferences.global.GlobalPreferences
+import tk.pokatomnik.mrakopediareader2.services.preferences.rememberPreferences
 
 data class Navigation(
     val navController: NavHostController,
-    private val serializer: Serializer
+    private val serializer: Serializer,
+    private val globalPreferences: GlobalPreferences
 ) {
-    private fun NavHostController.navigateSingle(route: String) {
+    private fun NavHostController.navigateDistinct(route: String) {
         navigate(route) {
             launchSingleTop = true
+        }
+        globalPreferences.savedPath = route
+    }
+
+    private fun NavHostController.navigateAllowSame(route: String) {
+        navigate(route)
+        globalPreferences.savedPath = route
+    }
+
+    fun navigateToSaved() {
+        val savedPath = globalPreferences.savedPath
+        if (savedPath != null) {
+            navController.navigateDistinct(savedPath)
         }
     }
 
@@ -49,20 +65,20 @@ data class Navigation(
         return currentDestination.on(categoriesRoute)
     }
     fun navigateToCategories() {
-        navController.navigateSingle(categoriesRoute)
+        navController.navigateDistinct(categoriesRoute)
     }
 
     val storiesRoute = "/categories/{$CATEGORY_TITLE_KEY}"
     fun navigateToStories(categoryTitle: String) {
         val serializedCategoryTitle = serializer.serialize(categoryTitle)
-        navController.navigateSingle("/categories/$serializedCategoryTitle")
+        navController.navigateDistinct("/categories/$serializedCategoryTitle")
     }
 
     val storyRoute = "/categories/{$CATEGORY_TITLE_KEY}/{$STORY_TITLE_KEY}"
     fun navigateToStory(categoryTitle: String, storyTitle: String) {
         val serializedCategoryTitle = serializer.serialize(categoryTitle)
         val serializedStoryTitle = serializer.serialize(storyTitle)
-        navController.navigate("/categories/$serializedCategoryTitle/$serializedStoryTitle")
+        navController.navigateAllowSame("/categories/$serializedCategoryTitle/$serializedStoryTitle")
     }
 
     val historyRoute = "/history"
@@ -72,7 +88,7 @@ data class Navigation(
         return currentDestination.on(historyRoute)
     }
     fun navigateToHistory() {
-        navController.navigateSingle(historyRoute)
+        navController.navigateDistinct(historyRoute)
     }
 
     val favoritesRoute = "/favorites"
@@ -82,7 +98,7 @@ data class Navigation(
         return currentDestination.on(favoritesRoute)
     }
     fun navigateToFavorites() {
-        navController.navigateSingle(favoritesRoute)
+        navController.navigateDistinct(favoritesRoute)
     }
 
     val settingsRoute = "/settings"
@@ -92,12 +108,12 @@ data class Navigation(
         return currentDestination.on(settingsRoute)
     }
     fun navigateToSettings() {
-        navController.navigateSingle(settingsRoute)
+        navController.navigateDistinct(settingsRoute)
     }
 
     val searchRoute = "/search"
     fun navigateToSearch() {
-        navController.navigateSingle(searchRoute)
+        navController.navigateDistinct(searchRoute)
     }
 
     companion object {
@@ -109,7 +125,8 @@ data class Navigation(
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun rememberNavigation(): Navigation {
+    val globalPreferences = rememberPreferences().globalPreferences
     val navHostController = rememberAnimatedNavController()
     val serializer = rememberSerializer()
-    return Navigation(navHostController, serializer)
+    return Navigation(navHostController, serializer, globalPreferences)
 }

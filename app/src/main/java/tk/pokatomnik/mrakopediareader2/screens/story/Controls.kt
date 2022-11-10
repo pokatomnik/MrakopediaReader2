@@ -21,10 +21,7 @@ internal fun BoxScope.Controls(
     pageContentSize: MutableState<Int>,
     maxFontSize: Int,
     minFontSize: Int,
-    isFavorite: Boolean,
-    onFavoritePress: (isFavorite: Boolean) -> Unit,
     onSharePress: () -> Unit,
-    onShowGalleryPress: (() -> Unit)?,
 ) {
     val (renderControls, setRenderControls) = remember { mutableStateOf(visible) }
     val controlsAlpha = animateFloatAsState(
@@ -46,7 +43,7 @@ internal fun BoxScope.Controls(
                 start = 16.dp,
                 end = 16.dp,
                 top = 16.dp,
-                bottom = 160.dp
+                bottom = 88.dp
             )
             .align(alignment = Alignment.BottomEnd)
             .alpha(controlsAlpha.value)
@@ -59,40 +56,6 @@ internal fun BoxScope.Controls(
             Icon(
                 imageVector = Icons.Filled.Share,
                 contentDescription = "Поделиться"
-            )
-        }
-    }
-    Row(
-        modifier = Modifier
-            .padding(
-                start = 16.dp,
-                end = 16.dp,
-                top = 16.dp,
-                bottom = 88.dp
-            )
-            .align(alignment = Alignment.BottomEnd)
-            .alpha(controlsAlpha.value)
-    ) {
-        if (onShowGalleryPress != null) {
-            FloatingActionButton(
-                contentColor = MaterialTheme.colors.onPrimary,
-                modifier = Modifier.padding(horizontal = 8.dp),
-                onClick = onShowGalleryPress
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Collections,
-                    contentDescription = "Галерея"
-                )
-            }
-        }
-        FloatingActionButton(
-            contentColor = MaterialTheme.colors.onPrimary,
-            modifier = Modifier.padding(horizontal = 8.dp),
-            onClick = { onFavoritePress(!isFavorite) }
-        ) {
-            Icon(
-                imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                contentDescription = if (isFavorite) "В избранном" else "Добавить в избранное"
             )
         }
     }

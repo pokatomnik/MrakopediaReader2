@@ -6,7 +6,7 @@ import tk.pokatomnik.mrakopediareader2.services.db.dao.favoritestories.FavoriteS
 import tk.pokatomnik.mrakopediareader2.services.db.rememberDatabase
 
 internal data class StoryFavoriteState(
-    val state: MutableState<Boolean>,
+    val state: MutableState<Boolean?>,
     val onFavoritePress: (isFavorite: Boolean) -> Unit
 )
 
@@ -16,7 +16,7 @@ internal fun rememberStoryFavorite(
 ): StoryFavoriteState {
     val coroutineScope = rememberCoroutineScope()
     val favoriteStoriesDAO = rememberDatabase().favoriteStoriesDAO()
-    val favoriteState = remember { mutableStateOf(false) }
+    val favoriteState = remember { mutableStateOf<Boolean?>(null) }
 
     LaunchedEffect(selectedPageTitle) {
         val isCurrentFavorite = favoriteStoriesDAO.has(selectedPageTitle) != null

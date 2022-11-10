@@ -1,6 +1,8 @@
 package tk.pokatomnik.mrakopediareader2.screens.story
 
-import androidx.compose.foundation.clickable
+import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.verticalScroll
@@ -25,9 +27,13 @@ import tk.pokatomnik.mrakopediareader2.services.preferences.page.rememberContent
 import tk.pokatomnik.mrakopediareader2.services.preferences.rememberPreferences
 import tk.pokatomnik.mrakopediareader2.services.readonlyparams.rememberReadonlyParameters
 import tk.pokatomnik.mrakopediareader2.ui.components.BottomSheet
+import tk.pokatomnik.mrakopediareader2.ui.components.LikeBox
 import tk.pokatomnik.mrakopediareader2.ui.components.PageContainer
+import tk.pokatomnik.mrakopediareader2.ui.components.rememberToast
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalPagerApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalPagerApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 private fun StoryInternal(
     scrollPosition: Int,
@@ -39,6 +45,7 @@ private fun StoryInternal(
     val coroutineScope = rememberCoroutineScope()
     val pagePreferences = rememberPreferences().pagePreferences
     val pageContentSize = rememberContentTextSize()
+    val toast = rememberToast()
 
     val readonlyParameters = rememberReadonlyParameters()
     val category = rememberMrakopediaIndex()
@@ -110,10 +117,19 @@ private fun StoryInternal(
                             .fillMaxSize()
                             .padding(horizontal = 16.dp)
                             .verticalScroll(scrollState)
-                            .clickable(
-                                remember { MutableInteractionSource() },
+                            .combinedClickable(
+                                interactionSource = remember { MutableInteractionSource() },
                                 indication = null,
-                                onClick = { setControlsDisplayed(!controlsDisplayed) }
+                                onClick = {
+                                    setControlsDisplayed(!controlsDisplayed)
+                                },
+                                onDoubleClick = {
+                                    val oldLiked = favoriteState.state.value
+                                    val newLiked = if (oldLiked == null) true else !oldLiked
+                                    val message = if (newLiked) "Добавлено в избранное" else "Удалено из избранного"
+                                    favoriteState.onFavoritePress(newLiked)
+                                    toast(message, Toast.LENGTH_SHORT)
+                                }
                             )
                     ) {
                         Text(
@@ -123,6 +139,9 @@ private fun StoryInternal(
                         )
                         Divider(modifier = Modifier.fillMaxWidth())
                         StoryContent(content = content, fontSize = pageContentSize.value)
+                        if (images.isNotEmpty()) {
+                            GalleryButton(onClick = onShowGalleryPress)
+                        }
                         RatingAndVoted(
                             rating = pageMeta?.rating ?: 0,
                             voted = pageMeta?.voted ?: 0,
@@ -142,19 +161,20 @@ private fun StoryInternal(
                                 }
                             )
                         }
-                        Source(pageTitle = selectedPageTitle)
+                        SourceButton(pageTitle = selectedPageTitle)
                     }
                     Controls(
                         visible = controlsDisplayed,
                         pageContentSize = pageContentSize,
                         maxFontSize = pagePreferences.maxFontSize,
                         minFontSize = pagePreferences.minFontSize,
-                        isFavorite = favoriteState.state.value,
-                        onFavoritePress = favoriteState.onFavoritePress,
-                        onSharePress = onSharePress,
-                        onShowGalleryPress = if (images.isEmpty()) null else onShowGalleryPress
+                        onSharePress = onSharePress
                     )
                 }
+            }
+            val liked = favoriteState.state.value
+            if (liked != null) {
+                LikeBox(liked = liked)
             }
         }
     )

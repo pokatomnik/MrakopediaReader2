@@ -128,12 +128,19 @@ private fun StoryInternal(
                                 }
                             )
                     ) {
-                        Text(
-                            text = selectedPageTitle,
-                            style = MaterialTheme.typography.h5,
-                            textAlign = TextAlign.Center,
-                        )
-                        Divider(modifier = Modifier.fillMaxWidth())
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Spacer(modifier = Modifier.fillMaxWidth().height(32.dp))
+                            Text(
+                                text = selectedPageTitle,
+                                style = MaterialTheme.typography.h4,
+                                textAlign = TextAlign.Center,
+                            )
+                            Spacer(modifier = Modifier.fillMaxWidth().height(32.dp))
+                        }
                         StoryContent(content = content, fontSize = pageContentSize.value)
                         if (images.isNotEmpty()) {
                             GalleryButton(onClick = onShowGalleryPress)

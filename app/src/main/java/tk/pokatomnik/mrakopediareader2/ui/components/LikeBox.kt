@@ -44,7 +44,7 @@ fun LikeBox(liked: Boolean) {
             modifier = Modifier
                 .size(sizeState.value)
                 .alpha(sizeState.value.value / 150)
-                .blur(50.dp),
+                .blur(2.dp),
             imageVector = Icons.Filled.Favorite,
             contentDescription = "Like"
         )

@@ -1,6 +1,5 @@
 package tk.pokatomnik.mrakopediareader2.screens.story
 
-import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -29,7 +28,6 @@ import tk.pokatomnik.mrakopediareader2.services.readonlyparams.rememberReadonlyP
 import tk.pokatomnik.mrakopediareader2.ui.components.BottomSheet
 import tk.pokatomnik.mrakopediareader2.ui.components.LikeBox
 import tk.pokatomnik.mrakopediareader2.ui.components.PageContainer
-import tk.pokatomnik.mrakopediareader2.ui.components.rememberToast
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalPagerApi::class,
     ExperimentalFoundationApi::class
@@ -45,7 +43,7 @@ private fun StoryInternal(
     val coroutineScope = rememberCoroutineScope()
     val pagePreferences = rememberPreferences().pagePreferences
     val pageContentSize = rememberContentTextSize()
-    val toast = rememberToast()
+    ShowHelpOnceSideEffect()
 
     val readonlyParameters = rememberReadonlyParameters()
     val category = rememberMrakopediaIndex()
@@ -126,9 +124,7 @@ private fun StoryInternal(
                                 onDoubleClick = {
                                     val oldLiked = favoriteState.state.value
                                     val newLiked = if (oldLiked == null) true else !oldLiked
-                                    val message = if (newLiked) "Добавлено в избранное" else "Удалено из избранного"
                                     favoriteState.onFavoritePress(newLiked)
-                                    toast(message, Toast.LENGTH_SHORT)
                                 }
                             )
                     ) {

@@ -9,6 +9,8 @@ class PagePreferences(private val sharedPreferences: SharedPreferences) {
             sharedPreferences.edit().putInt(FONT_SIZE_KEY, value).apply()
         }
 
+    var likeNotificationShown: Boolean = false
+
     val minFontSize = MIN_FONT_SIZE
 
     val maxFontSize = MAX_FONT_SIZE

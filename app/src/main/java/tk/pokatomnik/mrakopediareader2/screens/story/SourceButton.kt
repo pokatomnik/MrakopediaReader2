@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import tk.pokatomnik.mrakopediareader2.services.readonlyparams.rememberReadonlyParameters
 
 @Composable
-fun Source(pageTitle: String) {
+fun SourceButton(pageTitle: String) {
     val readonlyParameters = rememberReadonlyParameters()
     val context = LocalContext.current
     val openSource = {

@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.flowlayout.FlowRow
 
 @Composable
 fun AboutAndFeedbackSection() {
@@ -38,17 +39,13 @@ fun AboutAndFeedbackSection() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            TextButton(onClick = handleFeedbackClick) {
-                Text("Написать автору")
-            }
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            TextButton(onClick = handleSourceCodeClick) {
-                Text("Исходный код")
+            FlowRow {
+                TextButton(onClick = handleFeedbackClick) {
+                    Text("Написать автору")
+                }
+                TextButton(onClick = handleSourceCodeClick) {
+                    Text("Исходный код")
+                }
             }
         }
     }

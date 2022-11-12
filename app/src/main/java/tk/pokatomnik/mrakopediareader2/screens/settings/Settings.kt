@@ -28,6 +28,8 @@ fun Settings() {
             Divider(modifier = Modifier.fillMaxWidth())
             OpenWithMrakopediaAppSetting()
             Divider(modifier = Modifier.fillMaxWidth())
+            StatisticsSection()
+            Divider(modifier = Modifier.fillMaxWidth())
             AboutAndFeedbackSection()
         }
     }

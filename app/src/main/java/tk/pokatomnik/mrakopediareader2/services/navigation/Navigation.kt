@@ -9,13 +9,16 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import tk.pokatomnik.mrakopediareader2.services.index.MrakopediaIndex
+import tk.pokatomnik.mrakopediareader2.services.index.rememberMrakopediaIndex
 import tk.pokatomnik.mrakopediareader2.services.preferences.global.GlobalPreferences
 import tk.pokatomnik.mrakopediareader2.services.preferences.rememberPreferences
 
 data class Navigation(
     val navController: NavHostController,
     private val serializer: Serializer,
-    private val globalPreferences: GlobalPreferences
+    private val globalPreferences: GlobalPreferences,
+    private val mrakopediaIndex: MrakopediaIndex
 ) {
     private fun NavHostController.navigateDistinct(route: String) {
         navigate(route) {
@@ -116,6 +119,19 @@ data class Navigation(
         navController.navigateDistinct(searchRoute)
     }
 
+    fun back(): Boolean {
+        return navController.popBackStack()
+    }
+
+    fun navigateToRandom() {
+        val generalCategoryTitle = mrakopediaIndex.getGeneralCategoryTitle()
+        mrakopediaIndex
+            .getRandomTitles(1)
+            .takeIf { it.isNotEmpty() }
+            ?.first()
+            ?.let { navigateToStory(generalCategoryTitle, it) }
+    }
+
     companion object {
         private const val CATEGORY_TITLE_KEY = "categoryTitle"
         private const val STORY_TITLE_KEY = "storyTitle"
@@ -128,5 +144,6 @@ fun rememberNavigation(): Navigation {
     val globalPreferences = rememberPreferences().globalPreferences
     val navHostController = rememberAnimatedNavController()
     val serializer = rememberSerializer()
-    return Navigation(navHostController, serializer, globalPreferences)
+    val mrakopediaIndex = rememberMrakopediaIndex()
+    return Navigation(navHostController, serializer, globalPreferences, mrakopediaIndex)
 }

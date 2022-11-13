@@ -142,6 +142,12 @@ class MainActivity : ComponentActivity() {
                                             },
                                             onNavigateToCategory = { newCategoryTitle ->
                                                 navigation.navigateToStories(newCategoryTitle)
+                                            },
+                                            onNext = {
+                                                navigation.navigateToRandom(); true
+                                            },
+                                            onPrevious = {
+                                                navigation.back()
                                             }
                                         )
                                     }

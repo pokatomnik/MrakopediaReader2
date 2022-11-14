@@ -89,34 +89,6 @@ internal fun StoryInternal(
     BottomSheet(
         height = 500,
         drawerState = drawerState,
-        drawerContent = {
-            HorizontalPager(
-                count = images.size,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                val currentImage = images[it]
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(500.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    Text(
-                        text = currentImage.imgCaption ?: "Без названия",
-                        textAlign = TextAlign.Center
-                    )
-                    AsyncImage(
-                        modifier = Modifier.fillMaxSize(),
-                        model = "${readonlyParameters.originURL}/${currentImage.imgPath}",
-                        contentScale = ContentScale.FillHeight,
-                        contentDescription = currentImage.imgCaption,
-                        placeholder = painterResource(id = R.drawable.spinner),
-                        error = painterResource(id = R.drawable.broken)
-                    )
-                }
-            }
-        },
         content = {
             PageContainer {
                 val offsetX = remember { Animatable(0f) }
@@ -184,10 +156,16 @@ internal fun StoryInternal(
                                 style = MaterialTheme.typography.h4,
                                 textAlign = TextAlign.Center,
                             )
+                            if (categories.isNotEmpty()) {
+                                Categories(
+                                    categories = categories,
+                                    onClick = onNavigateToCategory
+                                )
+                            }
                             Spacer(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(32.dp)
+                                    .height(8.dp)
                             )
                         }
                         StoryContent(content = content, fontSize = pageContentSize.value)
@@ -205,14 +183,6 @@ internal fun StoryInternal(
                                 onClick = { onNavigateToPage(it) }
                             )
                         }
-                        if (categories.isNotEmpty()) {
-                            Categories(
-                                categories = categories,
-                                onClick = {
-                                    onNavigateToCategory(it)
-                                }
-                            )
-                        }
                         SourceButton(pageTitle = selectedPageTitle)
                     }
                     Controls(
@@ -227,6 +197,34 @@ internal fun StoryInternal(
             favoriteState.state.value?.let {
                 LikeBox(liked = it)
             }
-        }
+        },
+        drawerContent = {
+            HorizontalPager(
+                count = images.size,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                val currentImage = images[it]
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(500.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    Text(
+                        text = currentImage.imgCaption ?: "Без названия",
+                        textAlign = TextAlign.Center
+                    )
+                    AsyncImage(
+                        modifier = Modifier.fillMaxSize(),
+                        model = "${readonlyParameters.originURL}/${currentImage.imgPath}",
+                        contentScale = ContentScale.FillHeight,
+                        contentDescription = currentImage.imgCaption,
+                        placeholder = painterResource(id = R.drawable.spinner),
+                        error = painterResource(id = R.drawable.broken)
+                    )
+                }
+            }
+        },
     )
 }

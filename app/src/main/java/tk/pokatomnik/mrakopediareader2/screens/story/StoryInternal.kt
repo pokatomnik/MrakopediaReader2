@@ -156,6 +156,10 @@ internal fun StoryInternal(
                                 style = MaterialTheme.typography.h4,
                                 textAlign = TextAlign.Center,
                             )
+                            RatingAndVoted(
+                                rating = pageMeta?.rating ?: 0,
+                                voted = pageMeta?.voted ?: 0
+                            )
                             if (categories.isNotEmpty()) {
                                 Categories(
                                     categories = categories,
@@ -172,11 +176,6 @@ internal fun StoryInternal(
                         if (images.isNotEmpty()) {
                             GalleryButton(onClick = onShowGalleryPress)
                         }
-                        RatingAndVoted(
-                            rating = pageMeta?.rating ?: 0,
-                            voted = pageMeta?.voted ?: 0,
-                            fontSize = pageContentSize.value,
-                        )
                         if (seeAlso.isNotEmpty()) {
                             SeeAlso(
                                 seeAlso = seeAlso,

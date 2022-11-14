@@ -1,29 +1,24 @@
 package tk.pokatomnik.mrakopediareader2.screens.story
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.material.Divider
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 @Composable
-fun RatingAndVoted(
-    rating: Int,
-    voted: Int,
-    fontSize: Int,
-) {
-    Spacer(modifier = Modifier.height(16.dp))
-    Divider(modifier = Modifier.fillMaxWidth())
+fun RatingAndVoted(rating: Int, voted: Int) {
     Spacer(modifier = Modifier.height(8.dp))
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
         Text(
             text = "Рейтинг: $rating, Количество голосов: $voted",
-            fontSize = fontSize.sp
+            modifier = Modifier.alpha(0.4f)
         )
     }
 }

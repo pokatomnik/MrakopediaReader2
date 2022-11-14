@@ -218,7 +218,7 @@ internal fun StoryInternal(
                     AsyncImage(
                         modifier = Modifier.fillMaxSize(),
                         model = "${readonlyParameters.originURL}/${currentImage.imgPath}",
-                        contentScale = ContentScale.FillHeight,
+                        contentScale = ContentScale.Fit,
                         contentDescription = currentImage.imgCaption,
                         placeholder = painterResource(id = R.drawable.spinner),
                         error = painterResource(id = R.drawable.broken)

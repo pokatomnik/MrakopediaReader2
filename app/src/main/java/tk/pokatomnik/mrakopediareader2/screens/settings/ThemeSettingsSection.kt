@@ -19,7 +19,7 @@ fun ThemeSettingsSection() {
             .fillMaxWidth()
             .padding(top = 16.dp)
     ) {
-        Text("Тема")
+        Text("Тема", modifier = Modifier.padding(horizontal = 16.dp))
         SelectableRow(
             selected = themeIdentifierState.value == ThemeIdentifier.AUTO,
             onClick = { themeIdentifierState.value = ThemeIdentifier.AUTO },

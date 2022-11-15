@@ -60,7 +60,6 @@ private fun BottomDrawerSurface(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 16.dp)
                     .verticalScroll(rememberScrollState())
             ) {
                 Spacer(modifier = Modifier.fillMaxWidth().height(16.dp))

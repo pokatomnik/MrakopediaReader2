@@ -1,9 +1,12 @@
 package tk.pokatomnik.mrakopediareader2.screens.categories
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import kotlinx.coroutines.launch
 import tk.pokatomnik.mrakopediareader2.services.index.rememberMrakopediaIndex
 import tk.pokatomnik.mrakopediareader2.services.preferences.rememberPreferences
@@ -47,46 +50,48 @@ fun Categories(
     BottomSheet(
         drawerState = drawerState,
         drawerContent = {
-            SelectableRow(
-                selected = sorting.sortType == SortingType.ALPHA && sorting.sortDirection == SortDirection.ASC,
-                onClick = { setSorting(AlphaASC()); closeDrawer() },
-                content = { Text("Алфавит: по возрастанию") }
-            )
-            SelectableRow(
-                selected = sorting.sortType == SortingType.ALPHA && sorting.sortDirection == SortDirection.DESC,
-                onClick = { setSorting(AlphaDESC()); closeDrawer() },
-                content = { Text("Алфавит: по убыванию") }
-            )
-            SelectableRow(
-                selected = sorting.sortType == SortingType.RATING && sorting.sortDirection == SortDirection.ASC,
-                onClick = { setSorting(RatingASC()); closeDrawer() },
-                content = { Text("Рейтинг: по возрастанию") }
-            )
-            SelectableRow(
-                selected = sorting.sortType == SortingType.RATING && sorting.sortDirection == SortDirection.DESC,
-                onClick = { setSorting(RatingDESC()); closeDrawer() },
-                content = { Text("Рейтинг: по убыванию") }
-            )
-            SelectableRow(
-                selected = sorting.sortType == SortingType.VOTED && sorting.sortDirection == SortDirection.ASC,
-                onClick = { setSorting(VotedASC()); closeDrawer() },
-                content = { Text("Голоса: по возрастанию") }
-            )
-            SelectableRow(
-                selected = sorting.sortType == SortingType.VOTED && sorting.sortDirection == SortDirection.DESC,
-                onClick = { setSorting(VotedDESC()); closeDrawer() },
-                content = { Text("Голоса: по убыванию") }
-            )
-            SelectableRow(
-                selected = sorting.sortType == SortingType.QUANTITY && sorting.sortDirection == SortDirection.ASC,
-                onClick = { setSorting(QuantityASC()); closeDrawer() },
-                content = { Text("Количество: по возрастанию") }
-            )
-            SelectableRow(
-                selected = sorting.sortType == SortingType.QUANTITY && sorting.sortDirection == SortDirection.DESC,
-                onClick = { setSorting(QuantityDESC()); closeDrawer() },
-                content = { Text("Количество: по убыванию") }
-            )
+            Column(modifier = Modifier.fillMaxWidth()) {
+                SelectableRow(
+                    selected = sorting.sortType == SortingType.ALPHA && sorting.sortDirection == SortDirection.ASC,
+                    onClick = { setSorting(AlphaASC()); closeDrawer() },
+                    content = { Text("Алфавит: по возрастанию") }
+                )
+                SelectableRow(
+                    selected = sorting.sortType == SortingType.ALPHA && sorting.sortDirection == SortDirection.DESC,
+                    onClick = { setSorting(AlphaDESC()); closeDrawer() },
+                    content = { Text("Алфавит: по убыванию") }
+                )
+                SelectableRow(
+                    selected = sorting.sortType == SortingType.RATING && sorting.sortDirection == SortDirection.ASC,
+                    onClick = { setSorting(RatingASC()); closeDrawer() },
+                    content = { Text("Рейтинг: по возрастанию") }
+                )
+                SelectableRow(
+                    selected = sorting.sortType == SortingType.RATING && sorting.sortDirection == SortDirection.DESC,
+                    onClick = { setSorting(RatingDESC()); closeDrawer() },
+                    content = { Text("Рейтинг: по убыванию") }
+                )
+                SelectableRow(
+                    selected = sorting.sortType == SortingType.VOTED && sorting.sortDirection == SortDirection.ASC,
+                    onClick = { setSorting(VotedASC()); closeDrawer() },
+                    content = { Text("Голоса: по возрастанию") }
+                )
+                SelectableRow(
+                    selected = sorting.sortType == SortingType.VOTED && sorting.sortDirection == SortDirection.DESC,
+                    onClick = { setSorting(VotedDESC()); closeDrawer() },
+                    content = { Text("Голоса: по убыванию") }
+                )
+                SelectableRow(
+                    selected = sorting.sortType == SortingType.QUANTITY && sorting.sortDirection == SortDirection.ASC,
+                    onClick = { setSorting(QuantityASC()); closeDrawer() },
+                    content = { Text("Количество: по возрастанию") }
+                )
+                SelectableRow(
+                    selected = sorting.sortType == SortingType.QUANTITY && sorting.sortDirection == SortDirection.DESC,
+                    onClick = { setSorting(QuantityDESC()); closeDrawer() },
+                    content = { Text("Количество: по убыванию") }
+                )
+            }
         },
         content = {
             PageContainer(

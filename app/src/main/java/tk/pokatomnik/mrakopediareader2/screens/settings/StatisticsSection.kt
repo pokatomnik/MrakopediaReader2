@@ -17,7 +17,7 @@ fun StatisticsSection() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 16.dp, bottom = 16.dp)
+            .padding(all = 16.dp)
     ) {
         Text("Версия: $versionName ($versionCode)")
         Spacer(modifier = Modifier.height(8.dp))

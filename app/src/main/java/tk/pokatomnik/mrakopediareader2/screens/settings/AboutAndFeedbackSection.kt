@@ -30,7 +30,7 @@ fun AboutAndFeedbackSection() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 16.dp)
+            .padding(all = 16.dp)
     ) {
         Text("Приложение для чтения историй с сайта https://mrakopedia.net")
         Spacer(modifier = Modifier.height(8.dp))

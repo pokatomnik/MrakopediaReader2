@@ -23,11 +23,11 @@ fun SelectableRow(
                 onClick = onClick,
                 role = Role.RadioButton
             )
-            .padding(vertical = 8.dp),
+            .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        RadioButton(selected = selected, onClick = null)
-        Spacer(modifier = Modifier.width(4.dp))
         content()
+        Spacer(modifier = Modifier.weight(1f))
+        RadioButton(selected = selected, onClick = null)
     }
 }

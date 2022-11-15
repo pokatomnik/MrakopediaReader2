@@ -200,7 +200,7 @@ internal fun StoryInternal(
         drawerContent = {
             HorizontalPager(
                 count = images.size,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)
             ) {
                 val currentImage = images[it]
                 Column(

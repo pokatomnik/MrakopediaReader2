@@ -16,16 +16,27 @@ class MrakopediaIndex(
 ) {
     private val coroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
-    lateinit var index: Index
+    private var computedIndex: Index? = null
+
+    val index: Index
+        get() = warmUpIndex()
 
     val uniquePagesTotalComputed: Int
         get() = index.mrakopediaIndex[GENERAL_CATEGORY_TITLE]?.size ?: 0
 
-    fun prepare() {
+    @Synchronized
+    fun warmUpIndex(): Index {
+        val currentIndex = computedIndex
+        if (currentIndex != null) return currentIndex
+
         val jsonString = textContentResolver.resolve("content/index.json")
-        index = resolveIndex(GENERAL_CATEGORY_TITLE, jsonString) { title, metaMap ->
+        val resolvedIndex = resolveIndex(GENERAL_CATEGORY_TITLE, jsonString) { title, metaMap ->
             Category(title, metaMap, textContentResolver)
         }
+
+        computedIndex = resolvedIndex
+
+        return resolvedIndex
     }
 
     fun getCategory(categoryTitle: String): Category {

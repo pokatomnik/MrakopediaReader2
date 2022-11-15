@@ -18,7 +18,7 @@ fun IndexPreparer(
 
     LaunchedEffect(Unit) {
         withContext(Dispatchers.Default + SupervisorJob()) {
-            mrakopediaIndex.prepare()
+            mrakopediaIndex.warmUpIndex()
             setPrepared(true)
         }
     }

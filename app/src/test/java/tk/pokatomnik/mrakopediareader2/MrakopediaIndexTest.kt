@@ -13,8 +13,6 @@ class MrakopediaIndexTest {
     @Test
     fun `Check if parsing is correct`() {
         val parsed = MrakopediaIndex(MockTextAssetResolver())
-        parsed.prepare()
-
         assertEquals(
             listOf(
                 PageMeta(
@@ -83,7 +81,6 @@ class MrakopediaIndexTest {
     @Test
     fun `Check if missing category has no pages`() {
         val parsed = MrakopediaIndex(MockTextAssetResolver())
-        parsed.prepare()
         val category = parsed.getCategory("")
         val missingCategory = Category("", mapOf(), MockTextAssetResolver())
         assertEquals(category.size, missingCategory.size)
@@ -93,7 +90,6 @@ class MrakopediaIndexTest {
     @Test
     fun `Check if size is correct`() {
         val parsed = MrakopediaIndex(MockTextAssetResolver())
-        parsed.prepare()
         val size = parsed.uniquePagesTotalComputed
         assertEquals(size, 3)
     }
@@ -101,7 +97,6 @@ class MrakopediaIndexTest {
     @Test
     fun `Check if page resolved correctly`() {
         val parsed = MrakopediaIndex(MockTextAssetResolver())
-        parsed.prepare()
         val page = parsed
             .getCategory("category0")
             .getPageMetaByTitle("title2")
@@ -122,7 +117,6 @@ class MrakopediaIndexTest {
     @Test
     fun `Check if missing page resolves to null`() {
         val parsed = MrakopediaIndex(MockTextAssetResolver())
-        parsed.prepare()
         val page = parsed.getCategory("category0")
             .getPageMetaByTitle("")
         assertEquals(page, null)
@@ -131,7 +125,6 @@ class MrakopediaIndexTest {
     @Test
     fun `Check resolve existing content`() {
         val index = MrakopediaIndex(MockTextAssetResolver())
-        index.prepare()
         val category = index.getCategory("category0")
         val content0 = category.getPageContentByTitle("title0")
         val content1 = category.getPageContentByTitle("title1")
@@ -145,7 +138,6 @@ class MrakopediaIndexTest {
     @Test
     fun `Check if categories getter works correctly`() {
         val parsed = MrakopediaIndex(MockTextAssetResolver())
-        parsed.prepare()
 
         assertEquals(
             setOf(
@@ -160,7 +152,6 @@ class MrakopediaIndexTest {
     @Test
     fun `Check if average rating is correct`() {
         val parsed = MrakopediaIndex(MockTextAssetResolver())
-        parsed.prepare()
         val avgRating = parsed.getCategory("category0").avgRating
         assertEquals(avgRating, 33)
     }
@@ -168,7 +159,6 @@ class MrakopediaIndexTest {
     @Test
     fun `Check if average voted is correct`() {
         val parsed = MrakopediaIndex(MockTextAssetResolver())
-        parsed.prepare()
         val avgVoted = parsed.getCategory("category0").avgVoted
         assertEquals(avgVoted, 33)
     }
@@ -176,7 +166,6 @@ class MrakopediaIndexTest {
     @Test
     fun `Check if good stories are parsed`() {
         val parsed = MrakopediaIndex(MockTextAssetResolver())
-        parsed.prepare()
         val goodStories = parsed.getGoodStories()
         assertEquals(
             listOf("title0"),
@@ -187,7 +176,6 @@ class MrakopediaIndexTest {
     @Test
     fun `Check if stories of month are parsed`() {
         val parsed = MrakopediaIndex(MockTextAssetResolver())
-        parsed.prepare()
         val storiesOfMonth = parsed.getStoriesOfMonth()
         assertEquals(
             listOf("title1"),
@@ -198,7 +186,6 @@ class MrakopediaIndexTest {
     @Test
     fun `Check random pages amount`() {
         val parsed = MrakopediaIndex(MockTextAssetResolver())
-        parsed.prepare()
         val randomPages = parsed.getRandomTitles(2)
         assertEquals(2, randomPages.size)
     }
@@ -206,7 +193,6 @@ class MrakopediaIndexTest {
     @Test
     fun `Test required random pages amount exceeded total pages`() {
         val parsed = MrakopediaIndex(MockTextAssetResolver())
-        parsed.prepare()
         val randomPages = parsed.getRandomTitles(Int.MAX_VALUE)
         assertEquals(3, randomPages.size)
     }

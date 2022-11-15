@@ -22,5 +22,7 @@ fun StatisticsSection() {
         Text("Версия: $versionName ($versionCode)")
         Spacer(modifier = Modifier.height(8.dp))
         Text("Всего историй: ${mrakopediaIndex.uniquePagesTotalComputed}")
+        Spacer(modifier = Modifier.height(8.dp))
+        Text("Истории за ${mrakopediaIndex.formatCreationDate("dd.MM.yyyy")}")
     }
 }

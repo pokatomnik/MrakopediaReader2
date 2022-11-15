@@ -35,25 +35,25 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            IndexPreparer(
-                loadingView = { SplashScreen() },
-                screenView = {
-                    val mrakopediaIndex = rememberMrakopediaIndex()
-                    val navigation = rememberNavigation()
-                    val desiredPageTitle = rememberComputedPageTitle(intent.data)
+            MrakopediaReader2Theme {
+                IndexPreparer(
+                    loadingView = { SplashScreen() },
+                    screenView = {
+                        val mrakopediaIndex = rememberMrakopediaIndex()
+                        val navigation = rememberNavigation()
+                        val desiredPageTitle = rememberComputedPageTitle(intent.data)
 
-                    LaunchedEffect(desiredPageTitle) {
-                        if (desiredPageTitle == null) {
-                            navigation.navigateToSaved()
-                        } else {
-                            navigation.navigateToStory(
-                                mrakopediaIndex.getCategory(mrakopediaIndex.getGeneralCategoryTitle()).name,
-                                desiredPageTitle
-                            )
+                        LaunchedEffect(desiredPageTitle) {
+                            if (desiredPageTitle == null) {
+                                navigation.navigateToSaved()
+                            } else {
+                                navigation.navigateToStory(
+                                    mrakopediaIndex.getCategory(mrakopediaIndex.getGeneralCategoryTitle()).name,
+                                    desiredPageTitle
+                                )
+                            }
                         }
-                    }
 
-                    MrakopediaReader2Theme {
                         Scaffold(
                             bottomBar = {
                                 BottomNavigation {
@@ -181,8 +181,8 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                     }
-                }
-            )
+                )
+            }
         }
     }
 }

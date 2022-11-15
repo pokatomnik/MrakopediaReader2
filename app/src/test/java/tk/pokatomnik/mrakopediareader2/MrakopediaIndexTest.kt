@@ -292,7 +292,8 @@ class MockTextAssetResolver : TextAssetResolver {
                     "storiesOfMonth": [
                       "title1"
                     ]
-                  }
+                  },
+                  "creationDate": "2022-11-15T08:17:09.093Z"
                 }
             """.trimIndent()
         }

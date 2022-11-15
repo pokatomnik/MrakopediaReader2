@@ -6,6 +6,8 @@ import tk.pokatomnik.mrakopediareader2.domain.Index
 import tk.pokatomnik.mrakopediareader2.domain.PageMeta
 import tk.pokatomnik.mrakopediareader2.services.textassetresolver.TextAssetResolver
 import java.lang.Integer.min
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import kotlin.random.Random
 
 
@@ -97,6 +99,12 @@ class MrakopediaIndex(
             categories = searchForCategoriesAsync(searchString).await(),
             pageMeta = searchForPageMetaAsync(searchString).await()
         )
+    }
+    
+    fun formatCreationDate(format: String): String {
+        val formatter = DateTimeFormatter.ofPattern(format)
+            .withZone(ZoneId.systemDefault())
+        return formatter.format(index.creationDate)
     }
 
     companion object {

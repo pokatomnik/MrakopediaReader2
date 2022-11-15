@@ -4,6 +4,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import tk.pokatomnik.mrakopediareader2.domain.*
+import java.time.Instant
 
 fun resolveIndex(
     generalCategoryTitle: String,
@@ -20,13 +21,15 @@ fun resolveIndex(
             jsonObject = jsonObject,
             makeCategory = makeCategory
         )
+        val creationDate = getCreationDate(jsonObject)
 
         Index(
             mrakopediaIndex = mrakopediaIndex,
             storiesOfMonth = StoriesOfMonth(
                 storiesOfMonth = storiesOfMonth,
                 goodStories = goodStories
-            )
+            ),
+            creationDate = creationDate
         )
     } catch (e: Exception) {
         Index(
@@ -34,9 +37,15 @@ fun resolveIndex(
             storiesOfMonth = StoriesOfMonth(
                 storiesOfMonth = listOf(),
                 goodStories = listOf()
-            )
+            ),
+            creationDate = Instant.now()
         )
     }
+}
+
+fun getCreationDate(jsonObject: JsonObject): Instant {
+    val dateStr = jsonObject.getAsJsonPrimitive("creationDate").asString
+    return Instant.parse(dateStr)
 }
 
 fun getGoodStories(jsonObject: JsonObject): List<String> {

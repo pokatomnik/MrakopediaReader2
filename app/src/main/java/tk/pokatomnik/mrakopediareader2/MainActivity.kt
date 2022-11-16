@@ -23,6 +23,7 @@ import tk.pokatomnik.mrakopediareader2.screens.story.Story
 import tk.pokatomnik.mrakopediareader2.services.index.IndexPreparer
 import tk.pokatomnik.mrakopediareader2.services.index.rememberMrakopediaIndex
 import tk.pokatomnik.mrakopediareader2.services.navigation.rememberNavigation
+import tk.pokatomnik.mrakopediareader2.services.preferences.rememberPreferences
 import tk.pokatomnik.mrakopediareader2.ui.components.BottomNavItem
 import tk.pokatomnik.mrakopediareader2.ui.components.SplashScreen
 import tk.pokatomnik.mrakopediareader2.ui.components.rememberComputedPageTitle
@@ -42,10 +43,14 @@ class MainActivity : ComponentActivity() {
                         val mrakopediaIndex = rememberMrakopediaIndex()
                         val navigation = rememberNavigation()
                         val desiredPageTitle = rememberComputedPageTitle(intent.data)
+                        val globalPreferences = rememberPreferences().globalPreferences
 
                         LaunchedEffect(desiredPageTitle) {
                             if (desiredPageTitle == null) {
-                                navigation.navigateToSaved()
+                                val savedPath = globalPreferences.savedPath
+                                if (savedPath != null) {
+                                    navigation.navigateDistinct(savedPath)
+                                }
                             } else {
                                 navigation.navigateToStory(
                                     mrakopediaIndex.getCategory(mrakopediaIndex.getGeneralCategoryTitle()).name,
@@ -94,6 +99,9 @@ class MainActivity : ComponentActivity() {
                                     modifier = Modifier.padding(innerPadding)
                                 ) {
                                     screen(route = navigation.categoriesRoute, main = true) {
+                                        LaunchedEffect(Unit) {
+                                            globalPreferences.savedPath = navigation.getCategoriesPath()
+                                        }
                                         Categories(
                                             onSelectCategoryTitle = { categoryTitle ->
                                                 navigation.navigateToStories(categoryTitle)
@@ -102,6 +110,9 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                     screen(route = navigation.searchRoute) {
+                                        LaunchedEffect(Unit) {
+                                            globalPreferences.savedPath = navigation.getSearchPath()
+                                        }
                                         Search(
                                             onSelectPage = { storyTitle ->
                                                 navigation.navigateToStory(
@@ -117,6 +128,9 @@ class MainActivity : ComponentActivity() {
                                     screen(route = navigation.storiesRoute) {
                                         val categoryTitle = navigation.getCategoryTitle(it)
                                             ?: mrakopediaIndex.getGeneralCategoryTitle()
+                                        LaunchedEffect(Unit) {
+                                            globalPreferences.savedPath = navigation.getStoriesPath(categoryTitle)
+                                        }
                                         Stories(
                                             selectedCategoryTitle = categoryTitle,
                                             onSelectPage = { storyTitle ->
@@ -131,6 +145,12 @@ class MainActivity : ComponentActivity() {
                                         val categoryTitle = navigation.getCategoryTitle(it)
                                             ?: mrakopediaIndex.getGeneralCategoryTitle()
                                         val pageTitle = navigation.getStoryTitle(it) ?: ""
+                                        LaunchedEffect(Unit) {
+                                            globalPreferences.savedPath = navigation.getStoryPath(
+                                                categoryTitle,
+                                                pageTitle
+                                            )
+                                        }
                                         Story(
                                             selectedCategoryTitle = categoryTitle,
                                             selectedPageTitle = pageTitle,
@@ -152,6 +172,9 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                     screen(route = navigation.favoritesRoute, main = true) {
+                                        LaunchedEffect(Unit) {
+                                            globalPreferences.savedPath = navigation.getFavoritesPath()
+                                        }
                                         Favorites(
                                             onStoryClick = { storyTitle ->
                                                 navigation.navigateToStory(
@@ -165,6 +188,9 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                     screen(route = navigation.historyRoute, main = true) {
+                                        LaunchedEffect(Unit) {
+                                            globalPreferences.savedPath = navigation.getHistoryPath()
+                                        }
                                         History(
                                             onSelectPage = { storyTitle ->
                                                 navigation.navigateToStory(
@@ -175,6 +201,9 @@ class MainActivity : ComponentActivity() {
                                         )
                                     }
                                     screen(route = navigation.settingsRoute, main = true) {
+                                        LaunchedEffect(Unit) {
+                                            globalPreferences.savedPath = navigation.getSettingsPath()
+                                        }
                                         Settings()
                                     }
                                 }

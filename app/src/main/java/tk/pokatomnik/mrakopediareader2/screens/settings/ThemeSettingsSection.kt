@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import tk.pokatomnik.mrakopediareader2.services.preferences.global.ThemeIdentifier
 import tk.pokatomnik.mrakopediareader2.services.preferences.global.rememberThemeIdentifier
@@ -19,7 +20,11 @@ fun ThemeSettingsSection() {
             .fillMaxWidth()
             .padding(top = 16.dp)
     ) {
-        Text("Тема", modifier = Modifier.padding(horizontal = 16.dp))
+        Text(
+            text = "Тема",
+            modifier = Modifier.padding(horizontal = 16.dp),
+            fontWeight = FontWeight.Bold
+        )
         SelectableRow(
             selected = themeIdentifierState.value == ThemeIdentifier.AUTO,
             onClick = { themeIdentifierState.value = ThemeIdentifier.AUTO },

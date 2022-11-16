@@ -11,36 +11,28 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import tk.pokatomnik.mrakopediareader2.services.index.MrakopediaIndex
 import tk.pokatomnik.mrakopediareader2.services.index.rememberMrakopediaIndex
-import tk.pokatomnik.mrakopediareader2.services.preferences.global.GlobalPreferences
-import tk.pokatomnik.mrakopediareader2.services.preferences.rememberPreferences
 
 data class Navigation(
     val navController: NavHostController,
     private val serializer: Serializer,
-    private val globalPreferences: GlobalPreferences,
     private val mrakopediaIndex: MrakopediaIndex
 ) {
     private fun NavHostController.navigateDistinct(route: String) {
         navigate(route) {
             launchSingleTop = true
         }
-        globalPreferences.savedPath = route
     }
 
     private fun NavHostController.navigateAllowSame(route: String) {
         navigate(route)
-        globalPreferences.savedPath = route
-    }
-
-    fun navigateToSaved() {
-        val savedPath = globalPreferences.savedPath
-        if (savedPath != null) {
-            navController.navigateDistinct(savedPath)
-        }
     }
 
     private fun NavDestination?.on(route: String): Boolean {
         return this?.hierarchy?.any { it.route == route } == true
+    }
+
+    fun navigateDistinct(route: String) {
+        navController.navigateDistinct(route)
     }
 
     fun getCategoryTitle(entry: NavBackStackEntry): String? {
@@ -62,61 +54,82 @@ data class Navigation(
     }
 
     val categoriesRoute = "/categories"
+    fun getCategoriesPath(): String {
+        return categoriesRoute
+    }
     @Composable
     fun onCategories(): Boolean {
         val currentDestination = rememberCurrentDestination()
         return currentDestination.on(categoriesRoute)
     }
     fun navigateToCategories() {
-        navController.navigateDistinct(categoriesRoute)
+        navController.navigateDistinct(getCategoriesPath())
     }
 
     val storiesRoute = "/categories/{$CATEGORY_TITLE_KEY}"
-    fun navigateToStories(categoryTitle: String) {
+    fun getStoriesPath(categoryTitle: String): String {
         val serializedCategoryTitle = serializer.serialize(categoryTitle)
-        navController.navigateDistinct("/categories/$serializedCategoryTitle")
+        return "/categories/$serializedCategoryTitle"
+    }
+    fun navigateToStories(categoryTitle: String) {
+        navController.navigateDistinct(getStoriesPath(categoryTitle))
     }
 
     val storyRoute = "/categories/{$CATEGORY_TITLE_KEY}/{$STORY_TITLE_KEY}"
-    fun navigateToStory(categoryTitle: String, storyTitle: String) {
+    fun getStoryPath(categoryTitle: String, storyTitle: String): String {
         val serializedCategoryTitle = serializer.serialize(categoryTitle)
         val serializedStoryTitle = serializer.serialize(storyTitle)
-        navController.navigateAllowSame("/categories/$serializedCategoryTitle/$serializedStoryTitle")
+        return "/categories/$serializedCategoryTitle/$serializedStoryTitle"
+    }
+    fun navigateToStory(categoryTitle: String, storyTitle: String) {
+        navController.navigateAllowSame(getStoryPath(categoryTitle, storyTitle))
     }
 
     val historyRoute = "/history"
+    fun getHistoryPath(): String {
+        return historyRoute
+    }
     @Composable
     fun onHistory(): Boolean {
         val currentDestination = rememberCurrentDestination()
         return currentDestination.on(historyRoute)
     }
     fun navigateToHistory() {
-        navController.navigateDistinct(historyRoute)
+        navController.navigateDistinct(getHistoryPath())
     }
 
     val favoritesRoute = "/favorites"
+    fun getFavoritesPath(): String {
+        return favoritesRoute
+    }
     @Composable
     fun onFavorites(): Boolean {
         val currentDestination = rememberCurrentDestination()
         return currentDestination.on(favoritesRoute)
     }
     fun navigateToFavorites() {
-        navController.navigateDistinct(favoritesRoute)
+        navController.navigateDistinct(getFavoritesPath())
     }
 
     val settingsRoute = "/settings"
+    fun getSettingsPath(): String {
+        return settingsRoute
+    }
     @Composable
     fun onSettings(): Boolean {
         val currentDestination = rememberCurrentDestination()
         return currentDestination.on(settingsRoute)
     }
     fun navigateToSettings() {
-        navController.navigateDistinct(settingsRoute)
+        navController.navigateDistinct(getSettingsPath())
     }
 
     val searchRoute = "/search"
+    fun getSearchPath(): String {
+        return searchRoute
+    }
     fun navigateToSearch() {
-        navController.navigateDistinct(searchRoute)
+        navController.navigateDistinct(getSearchPath())
     }
 
     fun back(): Boolean {
@@ -141,9 +154,8 @@ data class Navigation(
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun rememberNavigation(): Navigation {
-    val globalPreferences = rememberPreferences().globalPreferences
     val navHostController = rememberAnimatedNavController()
     val serializer = rememberSerializer()
     val mrakopediaIndex = rememberMrakopediaIndex()
-    return Navigation(navHostController, serializer, globalPreferences, mrakopediaIndex)
+    return Navigation(navHostController, serializer, mrakopediaIndex)
 }

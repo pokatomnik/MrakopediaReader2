@@ -28,6 +28,15 @@ import java.lang.Integer.min
 
 private const val MAX_RESULTS = 10
 
+fun formatTripleDotInAMiddle(text: String, maxLength: Int): String {
+    return if (text.length <= maxLength) text else {
+        val half = (maxLength / 2)
+        val firstPart = text.slice(0 until half - 1)
+        val lastPart = text.takeLast(half - 2)
+        return "$firstPart...$lastPart"
+    }
+}
+
 @Composable
 fun SearchResults(
     searchText: String,
@@ -57,7 +66,7 @@ fun SearchResults(
             }
         },
         header = {
-            PageTitle(title = "Результаты поиска")
+            PageTitle(title = "\"${formatTripleDotInAMiddle(searchText, 18)}\"")
         }
     ) {
         if (results?.pageMeta.isNullOrEmpty() && results?.categories.isNullOrEmpty()) {

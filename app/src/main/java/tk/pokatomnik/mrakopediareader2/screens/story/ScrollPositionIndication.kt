@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material.ProgressIndicatorDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
@@ -17,7 +18,8 @@ internal fun ScrollPositionIndication(scrollState: ScrollState) {
         targetValue = scrollState
             .value
             .percentOf(scrollState.maxValue)
-            .toFloat() / 100
+            .toFloat() / 100,
+        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
     )
     LinearProgressIndicator(
         modifier = Modifier.fillMaxWidth(),

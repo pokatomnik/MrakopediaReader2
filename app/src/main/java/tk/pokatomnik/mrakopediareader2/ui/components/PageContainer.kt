@@ -42,18 +42,14 @@ fun PageContainer(
                         ) {
                             priorButton()
                         }
+                    } else {
+                        Spacer(modifier = Modifier.width(HEADER_HEIGHT.dp).fillMaxHeight())
                     }
                     Column(
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxWidth()
-                            .fillMaxHeight()
-                            .padding(
-                                end = (if (priorButton == null) 0 else HEADER_HEIGHT).dp,
-                                bottom = 0.dp,
-                                top = 0.dp,
-                                start = (if (trailingButton == null) 0 else HEADER_HEIGHT).dp
-                            ),
+                            .fillMaxHeight(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -67,6 +63,8 @@ fun PageContainer(
                         ) {
                             trailingButton()
                         }
+                    } else {
+                        Spacer(modifier = Modifier.width(HEADER_HEIGHT.dp).fillMaxHeight())
                     }
                 }
             }

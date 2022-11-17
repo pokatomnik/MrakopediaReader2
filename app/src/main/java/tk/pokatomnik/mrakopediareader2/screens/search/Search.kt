@@ -6,6 +6,7 @@ import androidx.compose.runtime.remember
 
 @Composable
 fun Search(
+    onBackPress: () -> Unit,
     onSelectCategory: (categoryTitle: String) -> Unit,
     onSelectPage: (pageTitle: String) -> Unit,
 ) {
@@ -18,7 +19,8 @@ fun Search(
                 setSearchText(it)
                 setViewStep(ViewStep.SEARCH_RESULTS)
             },
-            onSelectPageTitle = onSelectPage
+            onSelectPageTitle = onSelectPage,
+            onBackPress = onBackPress
         )
     }
 

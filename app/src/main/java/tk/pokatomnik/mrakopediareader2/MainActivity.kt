@@ -122,7 +122,8 @@ class MainActivity : ComponentActivity() {
                                             },
                                             onSelectCategory = { categoryTitle ->
                                                 navigation.navigateToStories(categoryTitle)
-                                            }
+                                            },
+                                            onBackPress = { navigation.back() }
                                         )
                                     }
                                     screen(route = navigation.storiesRoute) {

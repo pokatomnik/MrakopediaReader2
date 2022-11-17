@@ -13,10 +13,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -38,6 +41,8 @@ fun SearchView(
     val mrakopediaIndex = rememberMrakopediaIndex()
     val (searchText, setSearchText) = remember { mutableStateOf("") }
 
+    val focusRequester = remember { FocusRequester() }
+
     val doSearch = {
         if (searchText.isNotBlank()) {
             onSearch(searchText.trim())
@@ -46,6 +51,10 @@ fun SearchView(
 
     val randomPageTitles = remember {
         mrakopediaIndex.getRandomTitles(10)
+    }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
     }
 
     PageContainer(
@@ -61,7 +70,8 @@ fun SearchView(
             val searchTextColor = contentColorFor(MaterialTheme.colors.primarySurface)
             BasicTextField(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester),
                 value = searchText,
                 onValueChange = setSearchText,
                 keyboardOptions = KeyboardOptions(
@@ -84,7 +94,7 @@ fun SearchView(
                         interactionSource = remember { MutableInteractionSource() },
                         placeholder = {
                             Text(
-                                text = "Введите текст...",
+                                text = "Категория или название",
                                 color = searchTextColor
                             )
                         }

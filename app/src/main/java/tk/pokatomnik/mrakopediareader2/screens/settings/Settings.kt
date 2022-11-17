@@ -6,14 +6,25 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import tk.pokatomnik.mrakopediareader2.ui.components.PageContainer
 import tk.pokatomnik.mrakopediareader2.ui.components.PageTitle
 
 @Composable
-fun Settings() {
+fun Settings(
+    onBackClick: () -> Unit,
+) {
     PageContainer(
+        priorButton = {
+            IconButton(onClick = onBackClick) {
+                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "Назад")
+            }
+        },
         header = { PageTitle(title = "Настройки") }
     ) {
         Column(

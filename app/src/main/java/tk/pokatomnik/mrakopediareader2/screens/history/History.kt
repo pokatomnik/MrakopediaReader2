@@ -3,7 +3,11 @@ package tk.pokatomnik.mrakopediareader2.screens.history
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -21,6 +25,7 @@ import tk.pokatomnik.mrakopediareader2.ui.components.PageTitle
 
 @Composable
 fun History(
+    onBackClick: () -> Unit,
     onSelectPage: (pageTitle: String) -> Unit,
 ) {
     val mrakopediaIndex = rememberMrakopediaIndex()
@@ -38,6 +43,14 @@ fun History(
     }
 
     PageContainer(
+        priorButton = {
+            IconButton(onClick = onBackClick) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "Назад"
+                )
+            }
+        },
         header = { PageTitle(title = "История") }
     ) {
         if (historyItems == null) {

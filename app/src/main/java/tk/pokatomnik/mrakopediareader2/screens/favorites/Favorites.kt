@@ -2,9 +2,9 @@ package tk.pokatomnik.mrakopediareader2.screens.favorites
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material.ScrollableTabRow
-import androidx.compose.material.Tab
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -23,6 +23,7 @@ const val GOOD_STORIES = 2
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun Favorites(
+    onBackClick: () -> Unit,
     onStoryClick: (pageTitle: String) -> Unit,
     onCategoryClick: (categoryTitle: String) -> Unit,
 ) {
@@ -30,6 +31,14 @@ fun Favorites(
     val pagerState = rememberPagerState(SAVED_FAVORITES)
 
     PageContainer(
+        priorButton = {
+            IconButton(onClick = onBackClick) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "Назад"
+                )
+            }
+        },
         header = { PageTitle(title = "Избранное") }
     ) {
         ScrollableTabRow(

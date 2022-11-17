@@ -185,6 +185,9 @@ class MainActivity : ComponentActivity() {
                                             },
                                             onCategoryClick = { categoryTitle ->
                                                 navigation.navigateToStories(categoryTitle)
+                                            },
+                                            onBackClick = {
+                                                navigation.back()
                                             }
                                         )
                                     }
@@ -198,6 +201,9 @@ class MainActivity : ComponentActivity() {
                                                     categoryTitle = mrakopediaIndex.getGeneralCategoryTitle(),
                                                     storyTitle = storyTitle
                                                 )
+                                            },
+                                            onBackClick = {
+                                                navigation.back()
                                             }
                                         )
                                     }
@@ -205,7 +211,11 @@ class MainActivity : ComponentActivity() {
                                         LaunchedEffect(Unit) {
                                             globalPreferences.savedPath = navigation.getSettingsPath()
                                         }
-                                        Settings()
+                                        Settings(
+                                            onBackClick = {
+                                                navigation.back()
+                                            }
+                                        )
                                     }
                                 }
                             }

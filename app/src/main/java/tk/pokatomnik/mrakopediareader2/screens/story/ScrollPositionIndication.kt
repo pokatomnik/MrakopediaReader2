@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -26,11 +27,11 @@ internal fun ScrollPositionIndication(scrollState: ScrollState) {
     Row(
         modifier = Modifier.fillMaxWidth()
     ) {
-        Row(
+        Divider(
             modifier = Modifier
                 .height(3.dp)
                 .fillMaxWidth(withAnimated.value)
                 .background(MaterialTheme.colors.secondary)
-        ) {}
+        )
     }
 }

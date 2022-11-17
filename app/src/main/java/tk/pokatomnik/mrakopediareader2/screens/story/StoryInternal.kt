@@ -122,7 +122,7 @@ internal fun StoryInternal(
                             }
                         )
                 ) {
-                    ScrollPositionText(scrollState)
+                    ScrollPositionIndication(scrollState)
                     Column(
                         modifier = Modifier
                             .fillMaxSize()

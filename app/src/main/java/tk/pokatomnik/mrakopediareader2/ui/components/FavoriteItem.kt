@@ -47,7 +47,8 @@ fun ListItemWithClickableIcon(
                 text = title,
                 maxLines = 1,
                 style = MaterialTheme.typography.h6,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.alpha(0.8f)
             )
             if (description != null) {
                 Text(

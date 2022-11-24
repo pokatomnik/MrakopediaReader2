@@ -96,18 +96,6 @@ fun jsonObjectToMrakopediaIndex(
     return mrakopediaIndex
 }
 
-fun jsonElementToImageInfo(element: JsonElement): ImageInfo {
-    val jsonObject = element.asJsonObject
-    val imgPath = jsonObject.getAsJsonPrimitive("imgPath").asString
-    val imgCaption = try {
-        jsonObject.getAsJsonPrimitive("imgCaption").asString
-    } catch (e: Exception) { null }
-    return ImageInfo(
-        imgPath = imgPath,
-        imgCaption = imgCaption
-    )
-}
-
 fun jsonObjectToPageMeta(jsonObject: JsonElement): PageMeta? {
     return try {
         val pageMetaObject = jsonObject.asJsonObject
@@ -130,9 +118,6 @@ fun jsonObjectToPageMeta(jsonObject: JsonElement): PageMeta? {
             pageMetaObject.getAsJsonArray("seeAlso").asJsonArray.map { it.asString }
                 .toSet()
 
-        val images =
-            pageMetaObject.getAsJsonArray("images").asJsonArray.map { jsonElementToImageInfo(it) }
-
         return PageMeta(
             title = title,
             rating = rating,
@@ -141,7 +126,6 @@ fun jsonObjectToPageMeta(jsonObject: JsonElement): PageMeta? {
             contentId = contentId,
             categories = pageCategories,
             seeAlso = pageSeeAlsoLinks,
-            images = images
         )
     } catch (e: Exception) {
         null

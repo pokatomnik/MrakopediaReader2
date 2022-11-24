@@ -21,7 +21,6 @@ internal fun BoxScope.Controls(
     pageContentSize: MutableState<Int>,
     maxFontSize: Int,
     minFontSize: Int,
-    onSharePress: () -> Unit,
 ) {
     val (renderControls, setRenderControls) = remember { mutableStateOf(visible) }
     val controlsAlpha = animateFloatAsState(
@@ -51,23 +50,6 @@ internal fun BoxScope.Controls(
         FloatingActionButton(
             contentColor = MaterialTheme.colors.onPrimary,
             modifier = Modifier.padding(horizontal = 8.dp),
-            onClick = onSharePress,
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Share,
-                contentDescription = "Поделиться"
-            )
-        }
-    }
-    Row(
-        modifier = Modifier
-            .padding(all = 16.dp)
-            .align(alignment = Alignment.BottomEnd)
-            .alpha(controlsAlpha.value)
-    ) {
-        FloatingActionButton(
-            contentColor = MaterialTheme.colors.onPrimary,
-            modifier = Modifier.padding(horizontal = 8.dp),
             onClick = {
                 val newSize = pageContentSize.value + 1
                 if (newSize <= maxFontSize) {
@@ -80,6 +62,13 @@ internal fun BoxScope.Controls(
                 contentDescription = "Увеличить масштаб текста"
             )
         }
+    }
+    Row(
+        modifier = Modifier
+            .padding(all = 16.dp)
+            .align(alignment = Alignment.BottomEnd)
+            .alpha(controlsAlpha.value)
+    ) {
         FloatingActionButton(
             contentColor = MaterialTheme.colors.onPrimary,
             modifier = Modifier.padding(horizontal = 8.dp),

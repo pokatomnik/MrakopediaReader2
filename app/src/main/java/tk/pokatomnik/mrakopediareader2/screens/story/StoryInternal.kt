@@ -16,31 +16,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
 import kotlinx.coroutines.launch
-import tk.pokatomnik.mrakopediareader2.R
 import tk.pokatomnik.mrakopediareader2.services.index.rememberMrakopediaIndex
 import tk.pokatomnik.mrakopediareader2.services.preferences.page.rememberContentTextSize
 import tk.pokatomnik.mrakopediareader2.services.preferences.rememberPreferences
-import tk.pokatomnik.mrakopediareader2.services.readonlyparams.rememberReadonlyParameters
-import tk.pokatomnik.mrakopediareader2.ui.components.BottomSheet
 import tk.pokatomnik.mrakopediareader2.ui.components.LikeBox
 import tk.pokatomnik.mrakopediareader2.ui.components.PageContainer
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-@OptIn(
-    ExperimentalMaterialApi::class,
-    ExperimentalPagerApi::class,
-    ExperimentalFoundationApi::class
-)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun StoryInternal(
     scrollPosition: Int,
@@ -56,18 +44,14 @@ internal fun StoryInternal(
     val pageContentSize = rememberContentTextSize()
     ShowHelpOnceSideEffect()
 
-    val readonlyParameters = rememberReadonlyParameters()
     val category = rememberMrakopediaIndex()
         .getCategory(selectedCategoryTitle)
     val pageMeta = category.getPageMetaByTitle(selectedPageTitle)
     val content = remember(selectedPageTitle) { category.getPageContentByTitle(selectedPageTitle) }
     val seeAlso = pageMeta?.seeAlso ?: setOf()
     val categories = pageMeta?.categories ?: setOf()
-    val images = (pageMeta?.images ?: listOf()).toList()
 
     val favoriteState = rememberStoryFavorite(selectedPageTitle = selectedPageTitle)
-
-    val onSharePress = rememberShare(selectedPageTitle)
 
     val (controlsDisplayed, setControlsDisplayed) = remember { mutableStateOf(false) }
 
@@ -80,150 +64,106 @@ internal fun StoryInternal(
         setControlsDisplayed(false)
     }
 
-    val drawerState = rememberBottomDrawerState(initialValue = BottomDrawerValue.Closed)
-
-    val onShowGalleryPress: () -> Unit = {
-        coroutineScope.launch { drawerState.open() }
-    }
-
-    BottomSheet(
-        height = 500,
-        drawerState = drawerState,
-        content = {
-            PageContainer {
-                val offsetX = remember { Animatable(0f) }
-                val maxDrag = 200f
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .offset { IntOffset(offsetX.value.roundToInt(), 0) }
-                        .draggable(
-                            orientation = Orientation.Horizontal,
-                            state = rememberDraggableState {
-                                coroutineScope.launch {
-                                    offsetX.snapTo(
-                                        targetValue = (offsetX.value + it / 2)
-                                            .coerceIn(-maxDrag..maxDrag),
-                                    )
-                                }
-                            },
-                            onDragStopped = {
-                                val offsetXValue = -offsetX.value
-                                val absoluteOffset = abs(offsetXValue)
-                                val smallDrag = absoluteOffset < maxDrag - (maxDrag / 4)
-                                if (smallDrag) {
-                                    offsetX.animateTo(0f)
-                                    return@draggable
-                                }
-                                val navigated = (if (offsetXValue < 0) onPrevious else onNext)()
-                                if (!navigated) {
-                                    offsetX.animateTo(0f)
-                                }
-                            }
-                        )
-                ) {
-                    ScrollPositionIndication(scrollState)
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp)
-                            .verticalScroll(scrollState)
-                            .combinedClickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null,
-                                onClick = {
-                                    setControlsDisplayed(!controlsDisplayed)
-                                },
-                                onDoubleClick = {
-                                    val oldLiked = favoriteState.state.value
-                                    val newLiked = if (oldLiked == null) true else !oldLiked
-                                    favoriteState.onFavoritePress(newLiked)
-                                }
-                            )
-                    ) {
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Spacer(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(32.dp)
-                            )
-                            Text(
-                                text = selectedPageTitle,
-                                style = MaterialTheme.typography.h4,
-                                textAlign = TextAlign.Center,
-                            )
-                            RatingAndVoted(
-                                rating = pageMeta?.rating ?: 0,
-                                voted = pageMeta?.voted ?: 0
-                            )
-                            if (categories.isNotEmpty()) {
-                                Categories(
-                                    categories = categories,
-                                    onClick = onNavigateToCategory
-                                )
-                            }
-                            Spacer(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(8.dp)
+    PageContainer {
+        val offsetX = remember { Animatable(0f) }
+        val maxDrag = 200f
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .offset { IntOffset(offsetX.value.roundToInt(), 0) }
+                .draggable(
+                    orientation = Orientation.Horizontal,
+                    state = rememberDraggableState {
+                        coroutineScope.launch {
+                            offsetX.snapTo(
+                                targetValue = (offsetX.value + it / 2)
+                                    .coerceIn(-maxDrag..maxDrag),
                             )
                         }
-                        StoryContent(content = content, fontSize = pageContentSize.value)
-                        if (images.isNotEmpty()) {
-                            GalleryButton(onClick = onShowGalleryPress)
+                    },
+                    onDragStopped = {
+                        val offsetXValue = -offsetX.value
+                        val absoluteOffset = abs(offsetXValue)
+                        val smallDrag = absoluteOffset < maxDrag - (maxDrag / 4)
+                        if (smallDrag) {
+                            offsetX.animateTo(0f)
+                            return@draggable
                         }
-                        if (seeAlso.isNotEmpty()) {
-                            SeeAlso(
-                                seeAlso = seeAlso,
-                                onClick = { onNavigateToPage(it) }
-                            )
+                        val navigated = (if (offsetXValue < 0) onPrevious else onNext)()
+                        if (!navigated) {
+                            offsetX.animateTo(0f)
                         }
-                        SourceButton(pageTitle = selectedPageTitle)
                     }
-                    Controls(
-                        visible = controlsDisplayed,
-                        pageContentSize = pageContentSize,
-                        maxFontSize = pagePreferences.maxFontSize,
-                        minFontSize = pagePreferences.minFontSize,
-                        onSharePress = onSharePress
+                )
+        ) {
+            ScrollPositionIndication(scrollState)
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+                    .verticalScroll(scrollState)
+                    .combinedClickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = {
+                            setControlsDisplayed(!controlsDisplayed)
+                        },
+                        onDoubleClick = {
+                            val oldLiked = favoriteState.state.value
+                            val newLiked = if (oldLiked == null) true else !oldLiked
+                            favoriteState.onFavoritePress(newLiked)
+                        }
                     )
-                }
-            }
-            favoriteState.state.value?.let {
-                LikeBox(liked = it)
-            }
-        },
-        drawerContent = {
-            HorizontalPager(
-                count = images.size,
-                modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)
             ) {
-                val currentImage = images[it]
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(500.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(
-                        text = currentImage.imgCaption ?: "Без названия",
-                        textAlign = TextAlign.Center
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(32.dp)
                     )
-                    AsyncImage(
-                        modifier = Modifier.fillMaxSize(),
-                        model = "${readonlyParameters.originURL}/${currentImage.imgPath}",
-                        contentScale = ContentScale.Fit,
-                        contentDescription = currentImage.imgCaption,
-                        placeholder = painterResource(id = R.drawable.spinner),
-                        error = painterResource(id = R.drawable.broken)
+                    Text(
+                        text = selectedPageTitle,
+                        style = MaterialTheme.typography.h4,
+                        textAlign = TextAlign.Center,
+                    )
+                    RatingAndVoted(
+                        rating = pageMeta?.rating ?: 0,
+                        voted = pageMeta?.voted ?: 0
+                    )
+                    if (categories.isNotEmpty()) {
+                        Categories(
+                            categories = categories,
+                            onClick = onNavigateToCategory
+                        )
+                    }
+                    Spacer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(8.dp)
                     )
                 }
+                StoryContent(content = content, fontSize = pageContentSize.value)
+                if (seeAlso.isNotEmpty()) {
+                    SeeAlso(
+                        seeAlso = seeAlso,
+                        onClick = { onNavigateToPage(it) }
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
             }
-        },
-    )
+            Controls(
+                visible = controlsDisplayed,
+                pageContentSize = pageContentSize,
+                maxFontSize = pagePreferences.maxFontSize,
+                minFontSize = pagePreferences.minFontSize,
+            )
+        }
+    }
+    favoriteState.state.value?.let {
+        LikeBox(liked = it)
+    }
 }

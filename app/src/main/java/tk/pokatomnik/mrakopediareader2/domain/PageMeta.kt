@@ -10,7 +10,6 @@ data class PageMeta(
     val contentId: String,
     val categories: Collection<String>,
     val seeAlso: Collection<String>,
-    val images: Collection<ImageInfo>
 ) {
     fun formatDescription(): String {
         val readingTime = ceil(charactersInPage.toFloat() / 1500).toInt()

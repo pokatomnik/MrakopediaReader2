@@ -2,9 +2,8 @@ package tk.pokatomnik.mrakopediareader2
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import tk.pokatomnik.mrakopediareader2.domain.PageMeta
 import tk.pokatomnik.mrakopediareader2.domain.Category
-import tk.pokatomnik.mrakopediareader2.domain.ImageInfo
+import tk.pokatomnik.mrakopediareader2.domain.PageMeta
 import tk.pokatomnik.mrakopediareader2.services.index.MrakopediaIndex
 import tk.pokatomnik.mrakopediareader2.services.textassetresolver.TextAssetResolver
 import java.io.IOException
@@ -23,7 +22,6 @@ class MrakopediaIndexTest {
                     "0",
                     setOf("category0", "category1"),
                     setOf("foo", "bar"),
-                    listOf(),
                 ),
                 PageMeta(
                     "title1",
@@ -33,20 +31,6 @@ class MrakopediaIndexTest {
                     "1",
                     setOf(),
                     setOf(),
-                    listOf(
-                        ImageInfo(
-                            "/path/to/image/1.jpg",
-                            "First Image"
-                        ),
-                        ImageInfo(
-                            "/path/to/image/2.jpg",
-                            "Second Image"
-                        ),
-                        ImageInfo(
-                            "/path/to/image/3.jpg",
-                            null
-                        )
-                    )
                 ),
                 PageMeta(
                     "title2",
@@ -56,7 +40,6 @@ class MrakopediaIndexTest {
                     "2",
                     setOf(),
                     setOf(),
-                    listOf()
                 )
             ),
             parsed.getCategory("category0").pages,
@@ -72,7 +55,6 @@ class MrakopediaIndexTest {
                     "0",
                     setOf("category0", "category1"),
                     setOf("foo", "bar"),
-                    listOf()
                 )
             )
         )
@@ -109,7 +91,6 @@ class MrakopediaIndexTest {
                 "2",
                 setOf(),
                 setOf(),
-                listOf(),
             )
         )
     }
@@ -218,28 +199,14 @@ class MockTextAssetResolver : TextAssetResolver {
                         "seeAlso": [
                           "foo",
                           "bar"
-                        ],
-                        "images": []
+                        ]
                       },
                       {
                         "title": "title1",
                         "charactersInPage": 200,
                         "contentId": "1",
                         "categories": [],
-                        "seeAlso": [],
-                        "images": [
-                          {
-                            "imgPath": "/path/to/image/1.jpg",
-                            "imgCaption": "First Image"
-                          },
-                          {
-                            "imgPath": "/path/to/image/2.jpg",
-                            "imgCaption": "Second Image"
-                          },
-                          {
-                            "imgPath": "/path/to/image/3.jpg"
-                          }
-                        ]
+                        "seeAlso": []
                       },
                       {
                         "title": "title2",
@@ -248,8 +215,7 @@ class MockTextAssetResolver : TextAssetResolver {
                         "charactersInPage": 300,
                         "contentId": "2",
                         "categories": [],
-                        "seeAlso": [],
-                        "images": []
+                        "seeAlso": []
                       }
                     ],
                     "category1": [
@@ -266,8 +232,7 @@ class MockTextAssetResolver : TextAssetResolver {
                         "seeAlso": [
                           "foo",
                           "bar"
-                        ],
-                        "images": []
+                        ]
                       }
                     ]
                   },

@@ -79,7 +79,7 @@ fun Favorites(
             )
         }
         
-        HorizontalPager(count = 3, state = pagerState) {
+        HorizontalPager(count = 4, state = pagerState) {
             if (it == SAVED_FAVORITES) {
                 SavedFavorites(
                     onFavoriteStoryClick = onStoryClick,

@@ -17,8 +17,9 @@ import tk.pokatomnik.mrakopediareader2.ui.components.PageContainer
 import tk.pokatomnik.mrakopediareader2.ui.components.PageTitle
 
 const val SAVED_FAVORITES = 0
-const val STORIES_OF_MONTH = 1
-const val GOOD_STORIES = 2
+const val NEW_STORIES = 1
+const val STORIES_OF_MONTH = 2
+const val GOOD_STORIES = 3
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -56,6 +57,13 @@ fun Favorites(
                 text = { Text(text = "Избранное") }
             )
             Tab(
+                selected = pagerState.currentPage == NEW_STORIES,
+                onClick = {
+                    scope.launch { pagerState.animateScrollToPage(NEW_STORIES) }
+                },
+                text = { Text(text = "Новые истории") }
+            )
+            Tab(
                 selected = pagerState.currentPage == STORIES_OF_MONTH,
                 onClick = {
                     scope.launch { pagerState.animateScrollToPage(STORIES_OF_MONTH) }
@@ -77,6 +85,9 @@ fun Favorites(
                     onFavoriteStoryClick = onStoryClick,
                     onFavoriteCategoryClick = onCategoryClick
                 )
+            }
+            if (it == NEW_STORIES) {
+                NewStories(onStoryClick = onStoryClick)
             }
             if (it == STORIES_OF_MONTH) {
                 StoriesOfMonth(onStoryTitleClick = onStoryClick)

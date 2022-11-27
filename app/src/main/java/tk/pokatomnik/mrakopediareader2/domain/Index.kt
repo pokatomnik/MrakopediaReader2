@@ -6,5 +6,6 @@ data class Index(
     val mrakopediaIndex: Map<String, Category>,
     val goodStories: List<String>,
     val storiesOfMonth: List<String>,
+    val newStories: List<String>,
     val creationDate: Instant
 )

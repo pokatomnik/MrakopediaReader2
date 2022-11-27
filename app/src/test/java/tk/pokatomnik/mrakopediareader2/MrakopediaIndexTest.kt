@@ -165,6 +165,13 @@ class MrakopediaIndexTest {
     }
 
     @Test
+    fun `Check if new stories are parsed`() {
+        val parsed = MrakopediaIndex(MockTextAssetResolver())
+        val newStories = parsed.getNewStories()
+        assertEquals(listOf("title1"), newStories)
+    }
+
+    @Test
     fun `Check random pages amount`() {
         val parsed = MrakopediaIndex(MockTextAssetResolver())
         val randomPages = parsed.getRandomTitles(2)
@@ -240,6 +247,9 @@ class MockTextAssetResolver : TextAssetResolver {
                     "title0"
                   ],
                   "storiesOfMonth": [
+                    "title1"
+                  ],
+                  "newStories": [
                     "title1"
                   ],
                   "creationDate": "2022-11-15T08:17:09.093Z"

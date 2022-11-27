@@ -67,6 +67,10 @@ class MrakopediaIndex(
         return index.storiesOfMonth
     }
 
+    fun getNewStories(): List<String> {
+        return index.newStories
+    }
+
     fun getRandomTitles(desiredAmount: Int): Set<String> {
         val generalCategoryPages  = getCategory(getGeneralCategoryTitle()).pages
         val set = mutableSetOf<String>()

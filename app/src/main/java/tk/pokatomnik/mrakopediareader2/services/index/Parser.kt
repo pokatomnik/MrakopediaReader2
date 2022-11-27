@@ -16,6 +16,7 @@ fun resolveIndex(
 
         val goodStories = getGoodStories(jsonObject)
         val storiesOfMonth = getStoriesOfMonth(jsonObject)
+        val newStories = getNewStories(jsonObject)
         val mrakopediaIndex = jsonObjectToMrakopediaIndex(
             generalCategoryTitle = generalCategoryTitle,
             jsonObject = jsonObject,
@@ -27,6 +28,7 @@ fun resolveIndex(
             mrakopediaIndex = mrakopediaIndex,
             storiesOfMonth = storiesOfMonth,
             goodStories = goodStories,
+            newStories = newStories,
             creationDate = creationDate
         )
     } catch (e: Exception) {
@@ -34,6 +36,7 @@ fun resolveIndex(
             mrakopediaIndex = mapOf(),
             storiesOfMonth = listOf(),
             goodStories = listOf(),
+            newStories = listOf(),
             creationDate = Instant.now()
         )
     }
@@ -60,6 +63,15 @@ fun getStoriesOfMonth(jsonObject: JsonObject): List<String> {
         storiesOfMonth.add(storyOfMonth.asString)
     }
     return storiesOfMonth
+}
+
+fun getNewStories(jsonObject: JsonObject): List<String> {
+    val jsonArray = jsonObject.getAsJsonArray("newStories")
+    val newStories = mutableListOf<String>()
+    for (newStory in jsonArray) {
+        newStories.add(newStory.asString)
+    }
+    return newStories
 }
 
 fun jsonObjectToMrakopediaIndex(

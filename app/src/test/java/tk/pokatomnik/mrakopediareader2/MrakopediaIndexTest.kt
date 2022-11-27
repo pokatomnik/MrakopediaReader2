@@ -236,14 +236,12 @@ class MockTextAssetResolver : TextAssetResolver {
                       }
                     ]
                   },
-                  "storiesOfMonth": {
-                    "goodStories": [
-                      "title0"
-                    ],
-                    "storiesOfMonth": [
-                      "title1"
-                    ]
-                  },
+                  "goodStories": [
+                    "title0"
+                  ],
+                  "storiesOfMonth": [
+                    "title1"
+                  ],
                   "creationDate": "2022-11-15T08:17:09.093Z"
                 }
             """.trimIndent()

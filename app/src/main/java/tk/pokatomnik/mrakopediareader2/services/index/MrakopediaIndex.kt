@@ -60,11 +60,11 @@ class MrakopediaIndex(
     }
 
     fun getGoodStories(): List<String> {
-        return index.storiesOfMonth.goodStories
+        return index.goodStories
     }
 
     fun getStoriesOfMonth(): List<String> {
-        return index.storiesOfMonth.storiesOfMonth
+        return index.storiesOfMonth
     }
 
     fun getRandomTitles(desiredAmount: Int): Set<String> {

@@ -172,6 +172,8 @@ internal fun StoryInternal(
         }
     }
     favoriteState.state.value?.let {
-        LikeBox(liked = it)
+        ColorPreset { _, contentColor ->
+            LikeBox(liked = it, color = contentColor)
+        }
     }
 }

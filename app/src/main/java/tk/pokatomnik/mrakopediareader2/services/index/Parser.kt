@@ -16,6 +16,7 @@ fun resolveIndex(
 
         val goodStories = getGoodStories(jsonObject)
         val storiesOfMonth = getStoriesOfMonth(jsonObject)
+        val newStories = getNewStories(jsonObject)
         val mrakopediaIndex = jsonObjectToMrakopediaIndex(
             generalCategoryTitle = generalCategoryTitle,
             jsonObject = jsonObject,
@@ -25,19 +26,17 @@ fun resolveIndex(
 
         Index(
             mrakopediaIndex = mrakopediaIndex,
-            storiesOfMonth = StoriesOfMonth(
-                storiesOfMonth = storiesOfMonth,
-                goodStories = goodStories
-            ),
+            storiesOfMonth = storiesOfMonth,
+            goodStories = goodStories,
+            newStories = newStories,
             creationDate = creationDate
         )
     } catch (e: Exception) {
         Index(
             mrakopediaIndex = mapOf(),
-            storiesOfMonth = StoriesOfMonth(
-                storiesOfMonth = listOf(),
-                goodStories = listOf()
-            ),
+            storiesOfMonth = listOf(),
+            goodStories = listOf(),
+            newStories = listOf(),
             creationDate = Instant.now()
         )
     }
@@ -49,8 +48,7 @@ fun getCreationDate(jsonObject: JsonObject): Instant {
 }
 
 fun getGoodStories(jsonObject: JsonObject): List<String> {
-    val storiesOfMonthObject = jsonObject.getAsJsonObject("storiesOfMonth")
-    val jsonArray = storiesOfMonthObject.getAsJsonArray("goodStories")
+    val jsonArray = jsonObject.getAsJsonArray("goodStories")
     val goodStories = mutableListOf<String>()
     for (goodStoryTitle in jsonArray) {
         goodStories.add(goodStoryTitle.asString)
@@ -59,13 +57,21 @@ fun getGoodStories(jsonObject: JsonObject): List<String> {
 }
 
 fun getStoriesOfMonth(jsonObject: JsonObject): List<String> {
-    val storiesOfMonthObject = jsonObject.getAsJsonObject("storiesOfMonth")
-    val jsonArray = storiesOfMonthObject.getAsJsonArray("storiesOfMonth")
+    val jsonArray = jsonObject.getAsJsonArray("storiesOfMonth")
     val storiesOfMonth = mutableListOf<String>()
     for (storyOfMonth in jsonArray) {
         storiesOfMonth.add(storyOfMonth.asString)
     }
     return storiesOfMonth
+}
+
+fun getNewStories(jsonObject: JsonObject): List<String> {
+    val jsonArray = jsonObject.getAsJsonArray("newStories")
+    val newStories = mutableListOf<String>()
+    for (newStory in jsonArray) {
+        newStories.add(newStory.asString)
+    }
+    return newStories
 }
 
 fun jsonObjectToMrakopediaIndex(

@@ -160,6 +160,12 @@ internal fun StoryInternal(
                 pageContentSize = pageContentSize,
                 maxFontSize = pagePreferences.maxFontSize,
                 minFontSize = pagePreferences.minFontSize,
+                onScrollUpPress = {
+                    coroutineScope.launch { scrollState.animateScrollTo(0) }
+                },
+                onScrollDownPress = {
+                    coroutineScope.launch { scrollState.animateScrollTo(scrollState.maxValue) }
+                }
             )
         }
     }

@@ -96,77 +96,79 @@ internal fun StoryInternal(
                     }
                 )
         ) {
-            ScrollPositionIndication(scrollState)
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp)
-                    .verticalScroll(scrollState)
-                    .combinedClickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = {
-                            setControlsDisplayed(!controlsDisplayed)
-                        },
-                        onDoubleClick = {
-                            val oldLiked = favoriteState.state.value
-                            val newLiked = if (oldLiked == null) true else !oldLiked
-                            favoriteState.onFavoritePress(newLiked)
-                        }
-                    )
-            ) {
+            ContentSurface {
+                ScrollPositionIndication(scrollState)
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp)
+                        .verticalScroll(scrollState)
+                        .combinedClickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = {
+                                setControlsDisplayed(!controlsDisplayed)
+                            },
+                            onDoubleClick = {
+                                val oldLiked = favoriteState.state.value
+                                val newLiked = if (oldLiked == null) true else !oldLiked
+                                favoriteState.onFavoritePress(newLiked)
+                            }
+                        )
                 ) {
-                    Spacer(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(32.dp)
-                    )
-                    Text(
-                        text = selectedPageTitle,
-                        style = MaterialTheme.typography.h4,
-                        textAlign = TextAlign.Center,
-                    )
-                    RatingAndVoted(
-                        rating = pageMeta?.rating ?: 0,
-                        voted = pageMeta?.voted ?: 0
-                    )
-                    if (categories.isNotEmpty()) {
-                        Categories(
-                            categories = categories,
-                            onClick = onNavigateToCategory
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(32.dp)
+                        )
+                        Text(
+                            text = selectedPageTitle,
+                            style = MaterialTheme.typography.h4,
+                            textAlign = TextAlign.Center,
+                        )
+                        RatingAndVoted(
+                            rating = pageMeta?.rating ?: 0,
+                            voted = pageMeta?.voted ?: 0
+                        )
+                        if (categories.isNotEmpty()) {
+                            Categories(
+                                categories = categories,
+                                onClick = onNavigateToCategory
+                            )
+                        }
+                        Spacer(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(8.dp)
                         )
                     }
-                    Spacer(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(8.dp)
-                    )
+                    StoryContent(content = content, fontSize = pageContentSize.value)
+                    if (seeAlso.isNotEmpty()) {
+                        SeeAlso(
+                            seeAlso = seeAlso,
+                            onClick = { onNavigateToPage(it) }
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
-                StoryContent(content = content, fontSize = pageContentSize.value)
-                if (seeAlso.isNotEmpty()) {
-                    SeeAlso(
-                        seeAlso = seeAlso,
-                        onClick = { onNavigateToPage(it) }
-                    )
-                }
-                Spacer(modifier = Modifier.height(16.dp))
+                Controls(
+                    visible = controlsDisplayed,
+                    pageContentSize = pageContentSize,
+                    maxFontSize = pagePreferences.maxFontSize,
+                    minFontSize = pagePreferences.minFontSize,
+                    onScrollUpPress = {
+                        coroutineScope.launch { scrollState.animateScrollTo(0) }
+                    },
+                    onScrollDownPress = {
+                        coroutineScope.launch { scrollState.animateScrollTo(scrollState.maxValue) }
+                    }
+                )
             }
-            Controls(
-                visible = controlsDisplayed,
-                pageContentSize = pageContentSize,
-                maxFontSize = pagePreferences.maxFontSize,
-                minFontSize = pagePreferences.minFontSize,
-                onScrollUpPress = {
-                    coroutineScope.launch { scrollState.animateScrollTo(0) }
-                },
-                onScrollDownPress = {
-                    coroutineScope.launch { scrollState.animateScrollTo(scrollState.maxValue) }
-                }
-            )
         }
     }
     favoriteState.state.value?.let {

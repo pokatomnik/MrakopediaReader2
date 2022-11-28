@@ -36,6 +36,8 @@ fun Settings(
             Divider(modifier = Modifier.fillMaxWidth())
             ContentFontFamilySection()
             Divider(modifier = Modifier.fillMaxWidth())
+            ColorPresetSelection()
+            Divider(modifier = Modifier.fillMaxWidth())
             OpenWithMrakopediaAppSetting()
             Divider(modifier = Modifier.fillMaxWidth())
             StatisticsSection()

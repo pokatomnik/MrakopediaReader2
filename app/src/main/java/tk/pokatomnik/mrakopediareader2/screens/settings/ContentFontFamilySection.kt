@@ -20,9 +20,11 @@ fun ContentFontFamilySection() {
     val fontsMap = rememberPreferences().pagePreferences.storyFontsMap
     val contentFamilyState = rememberContentFontFamily()
 
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(top = 16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp)
+    ) {
         Text(
             text = "Шрифт контента",
             fontWeight = FontWeight.Bold,

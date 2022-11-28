@@ -5,9 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
@@ -18,11 +16,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LikeBox(liked: Boolean) {
+fun LikeBox(
+    liked: Boolean,
+    color: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
+) {
     val (animationPlaying, setAnimationPlaying) = remember { mutableStateOf(false) }
 
     val sizeState = animateDpAsState(
@@ -41,6 +43,7 @@ fun LikeBox(liked: Boolean) {
     
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Icon(
+            tint = color,
             modifier = Modifier
                 .size(sizeState.value)
                 .alpha(sizeState.value.value / 150)

@@ -21,6 +21,8 @@ internal fun BoxScope.Controls(
     pageContentSize: MutableState<Int>,
     maxFontSize: Int,
     minFontSize: Int,
+    onScrollUpPress: () -> Unit,
+    onScrollDownPress: () -> Unit,
 ) {
     val (renderControls, setRenderControls) = remember { mutableStateOf(visible) }
     val controlsAlpha = animateFloatAsState(
@@ -62,6 +64,16 @@ internal fun BoxScope.Controls(
                 contentDescription = "Увеличить масштаб текста"
             )
         }
+        FloatingActionButton(
+            contentColor = MaterialTheme.colors.onPrimary,
+            modifier = Modifier.padding(horizontal = 8.dp),
+            onClick = onScrollUpPress
+        ) {
+            Icon(
+                imageVector = Icons.Filled.KeyboardDoubleArrowUp,
+                contentDescription = "Прокрутить вверх"
+            )
+        }
     }
     Row(
         modifier = Modifier
@@ -82,6 +94,16 @@ internal fun BoxScope.Controls(
             Icon(
                 imageVector = Icons.Filled.Remove,
                 contentDescription = "Уменьшить масштаб текста"
+            )
+        }
+        FloatingActionButton(
+            contentColor = MaterialTheme.colors.onPrimary,
+            modifier = Modifier.padding(horizontal = 8.dp),
+            onClick = onScrollDownPress
+        ) {
+            Icon(
+                imageVector = Icons.Filled.KeyboardDoubleArrowDown,
+                contentDescription = "Прокрутить вниз"
             )
         }
     }
